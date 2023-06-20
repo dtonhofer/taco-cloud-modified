@@ -4,6 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+// ---
+// This is wrapper around String, basically giving us a String with a specific type
+// to implement a specific id. This helps enormously when writing code and looking for
+// problems (because the alternative is to use String directly - and every String looks
+// like s String, it's for when your code is working on the lowest levels.
+// ---
+
 public final class IngredientId {
 
     // We demand that the String encapsulated by IngredientId is not empty, trimmed and uppercase.

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import tacos.model.ingredients.IngredientSpace;
+import tacos.model.ingredients.IngredientRelation;
 import tacos.model.ingredients.IngredientType;
 import tacos.model.taco.Taco;
 import tacos.model.tacoorder.TacoOrder;
@@ -33,7 +33,7 @@ public class DesignTacoController {
             // "${cheese}", "${veggies}" etc.
             String key = type.name().toLowerCase();
             assert IngredientType.valueOf(key) == type;
-            model.addAttribute(key, Collections.unmodifiableSet(IngredientSpace.space.getByTypeSorted(type)));
+            model.addAttribute(key, Collections.unmodifiableSet(IngredientRelation.relation.getByTypeSorted(type)));
         }
     }
 

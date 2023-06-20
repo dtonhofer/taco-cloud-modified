@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.IngredientSpace;
+import tacos.model.ingredients.IngredientRelation;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -48,7 +48,7 @@ public class Taco {
             log.debug("setIngredients() called with {}", contents);
         }
         for (String id : in) {
-            Ingredient ing = IngredientSpace.space.getById(id);
+            Ingredient ing = IngredientRelation.relation.getById(id);
             if (ing == null) {
                 log.warn("No ingredient corresponds to id {}", id);
             } else {

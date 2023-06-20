@@ -7,18 +7,23 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class IngredientSpace {
+// ---
+// The "relation" (in the database or logic sense) of Ingredients.
+// It's a singleton.
+// ---
 
-    // unique canonical instance (i.e. singleton) of the space
+public class IngredientRelation {
 
-    public final static IngredientSpace space = new IngredientSpace();
+    // unique canonical instance (i.e. singleton) of the relation
 
-    // the space is implemented by a map holding Ingredients
-    // maybe the map should be immutable
+    public final static IngredientRelation relation = new IngredientRelation();
+
+    // The relation is implemented by a map.
+    // Maybe the map should be immutable.
 
     private final Map<IngredientId, Ingredient> map = new HashMap<>();
 
-    // at space construction time, this is used to initialize and add a new ingredient
+    // At construction time, this is used to initialize and add a fixed set of ingredient.
 
     private void addIngredientToMap(@NotNull String id, @NotNull String name, @NotNull IngredientType type) {
         var iid = new IngredientId(id);
@@ -27,8 +32,6 @@ public class IngredientSpace {
             throw new IllegalStateException("Clash on id: " + iid);
         }
     }
-
-    // adding ingredients at construction time
 
     {
         addIngredientToMap("FLTO", "Flour Tortilla", IngredientType.WRAP);
@@ -43,7 +46,7 @@ public class IngredientSpace {
         addIngredientToMap("SRCR", "Sour Cream", IngredientType.SAUCE);
     }
 
-
+    @SuppressWarnings("unused")
     public @Nullable Ingredient getById(@NotNull IngredientId id) {
         return map.get(id);
     }
@@ -60,13 +63,13 @@ public class IngredientSpace {
         return new TreeSet<>(getByType(type));
     }
 
-    @NotNull
-    public Stream<IngredientId> getIdStream() {
+    @SuppressWarnings("unused")
+    public @NotNull Stream<IngredientId> getIdStream() {
         return map.keySet().stream();
     }
 
-    @NotNull
-    public Stream<Ingredient> getIngredientStream() {
+
+    public @NotNull Stream<Ingredient> getIngredientStream() {
         return map.values().stream();
     }
 }
