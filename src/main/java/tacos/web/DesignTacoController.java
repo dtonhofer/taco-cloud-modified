@@ -7,15 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.IngredientId;
-import tacos.model.ingredients.IngredientType;
 import tacos.model.ingredients.IngredientSpace;
+import tacos.model.ingredients.IngredientType;
 import tacos.model.taco.Taco;
 import tacos.model.tacoorder.TacoOrder;
 
 import java.util.Collections;
-import java.util.Set;
 
 // http://localhost:8080/design
 
