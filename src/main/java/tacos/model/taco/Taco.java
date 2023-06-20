@@ -24,10 +24,15 @@ public class Taco {
     private String name;
     private Set<Ingredient> ingredients = new HashSet<>();
 
-    // Let Lombok generate getters and setters, but we need this one too so
-    // that Thymeleaf processing can set an "array of ingredients given by string id"
+    // Let Lombok generate getters and setters
+    //
+    // If we don't have a Converter (the "IngredientByIdConverter") to convert
+    // "String" (the if an Ingredient) to "Ingredient", we need this two methods
+    // below instead. Here, they have not been commented out but made unused by
+    // prefixing the method names with an underscore.
 
-    public @NotNull String[] getIngredients() {
+    @SuppressWarnings("unused")
+    public @NotNull String[] _getIngredients() {
         String[] res = ingredients.stream().map(ingredient -> ingredient.getId().getRaw()).toList().toArray(new String[0]);
         if (log.isDebugEnabled()) {
             String contents = Arrays.stream(res).collect(Collectors.joining(",", "[", "]"));
@@ -36,7 +41,8 @@ public class Taco {
         return res;
     }
 
-    public void setIngredients(@NotNull String[] in) {
+    @SuppressWarnings("unused")
+    public void _setIngredients(@NotNull String[] in) {
         if (log.isDebugEnabled()) {
             String contents = Arrays.stream(in).collect(Collectors.joining(",", "[", "]"));
             log.debug("setIngredients() called with {}", contents);
@@ -50,4 +56,5 @@ public class Taco {
             }
         }
     }
+
 }
