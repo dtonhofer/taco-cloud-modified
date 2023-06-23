@@ -11,6 +11,7 @@
 <img th:src="@{/images/TacoCloud.png}"/>
 
 <!-- whenever a star appears in expression, we will operate on the "taco" model attribute -->
+<!-- The IDE (Intellij IDEA) knows that ${taco} is implemented by the "Taco" session-backing bean -->
 
 <form method="POST" th:object="${taco}">
 

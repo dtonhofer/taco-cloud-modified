@@ -27,9 +27,13 @@ configurations {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.jetbrains:annotations:24.0.0")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+
+    testImplementation("junit:junit:4.13.1")
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
-    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+    // implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
 
     compileOnly("org.projectlombok:lombok:" + lombok_version)
     annotationProcessor("org.projectlombok:lombok:"  + lombok_version)

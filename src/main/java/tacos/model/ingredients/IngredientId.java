@@ -42,7 +42,7 @@ public final class IngredientId {
 
     @Override
     public String toString() {
-        return "IngredientId(" + id + ")";
+        return "IngredientId-" + id;
     }
 
     // For Thymeleaf templates, we need the raw string underlying the id.

@@ -17,8 +17,8 @@
       <h3>Your tacos in this order:</h3>
       <a th:href="@{/design}" id="another">Design another taco</a><br/>
       <ul>
-        <li th:each="taco : ${tacoOrder.tacos}">
-          <span th:text="${taco.name}">taco name</span></li>
+        <li th:each="name : ${tacoOrder.tacoNames}">
+          <span th:text="${name}">taco name</span></li>
       </ul>
 
 <!-- end::allButValidation[] -->
@@ -31,7 +31,7 @@
 <!-- tag::allButValidation[] -->
       <h3>Deliver my taco masterpieces to...</h3>
       <label for="deliveryName">Name: </label>
-      <input type="text" th:field="*{deliveryName}"/>
+      <input type="text" th:field="*{deliveryName}" />
 <!-- end::allButValidation[] -->
       <span class="validationError"
             th:if="${#fields.hasErrors('deliveryName')}"
