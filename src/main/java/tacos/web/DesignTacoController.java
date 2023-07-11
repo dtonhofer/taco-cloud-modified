@@ -101,6 +101,13 @@ public class DesignTacoController {
         res.add(makeTaco("Full fat", "FLTO", "GRBF", "CHED", "JACK", "SRCR"));
         res.add(makeTaco("El veggie", "COTO", "TMTO", "LETC", "SLSA"));
         res.add(makeTaco("Just Lettuce", "FLTO", "LETC", "SRCR"));
+        res.add(makeTaco("Leon the Professional",
+                IngredientRelation.relation
+                        .getIngredientStream()
+                        .map(Ingredient::getId)
+                        .map(IngredientId::getRaw)
+                        .toList()
+                        .toArray(new String[]{})));
         return res;
     }
 

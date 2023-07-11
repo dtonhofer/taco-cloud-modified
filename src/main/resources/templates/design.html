@@ -30,10 +30,11 @@
         <div class="ingredient-group" id="wraps">
             <h3>Designate your wrap:</h3>
             <div th:each="ingredient : ${wrap}">
-                <label>Designate your wrap
-                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
-                </label>
-                <span th:text="${ingredient.name}">INGREDIENT</span><br/>
+                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
+                <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
+                <!-- Thymeleaf adds a hidden input name "_ingredients" with value "on", probably to keep track of the ingredients -->
+                <!-- If the Taco bean already has the ingredient matching "value" in its internal set of ingredients,
+                     Thymeleaf adds the attribute checked="checked" to the input field. Pretty neat! -->
             </div>
         </div>
 
@@ -43,10 +44,8 @@
         <div class="ingredient-group" id="proteins">
             <h3>Pick your protein:</h3>
             <div th:each="ingredient : ${protein}">
-                <label>Pick your protein
-                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
-                </label>
-                <span th:text="${ingredient.name}">INGREDIENT</span><br/>
+                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
+                <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
@@ -56,10 +55,8 @@
         <div class="ingredient-group" id="cheeses">
             <h3>Choose your cheese:</h3>
             <div th:each="ingredient : ${cheese}">
-                <label>Choose your cheese
-                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
-                </label>
-                <span th:text="${ingredient.name}">INGREDIENT</span><br/>
+                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
+                <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
@@ -69,10 +66,8 @@
         <div class="ingredient-group" id="veggies">
             <h3>Determine your veggies:</h3>
             <div th:each="ingredient : ${veggies}">
-                <label>Determine your veggies
-                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
-                </label>
-                <span th:text="${ingredient.name}">INGREDIENT</span><br/>
+                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
+                <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
@@ -82,10 +77,8 @@
         <div class="ingredient-group" id="sauces">
             <h3>Select your sauce:</h3>
             <div th:each="ingredient : ${sauce}">
-                <label>Select your sauce
-                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
-                </label>
-                <span th:text="${ingredient.name}">INGREDIENT</span><br/>
+                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
+                <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
@@ -93,11 +86,15 @@
 
     <div>
         <h3>Name your taco creation:</h3>
-        <label>Name your taco creation
-            <input type="text" th:field="*{name}"/>
-        </label>
+        <div>
+            <label for="taco_name" >Name your taco creation</label>
+            <!-- "value" attribute of input is set from taco attribute -->
+            <input th:field="*{name}" type="text" id="taco_name"/>
+        </div>
+
         <span class="validationError" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
         <br/>
+
         <button>Submit Your Taco</button>
     </div>
 
