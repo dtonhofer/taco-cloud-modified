@@ -4,5 +4,5 @@ Example code from ["Spring in Action"](https://www.manning.com/books/spring-in-a
 
 This code grows & changes as I go through the book.
 
-
+I will add pages with additional notes when warranted.
 
