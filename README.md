@@ -8,3 +8,4 @@ I will add pages with additional notes when warranted.
 
 Note that this project uses Gradle as build tool, with the Kotlin DSL, instead of Maven as the book does.
 
+I'm using the Intellij IDEA IDE, which may have have various effects on the project structure.
