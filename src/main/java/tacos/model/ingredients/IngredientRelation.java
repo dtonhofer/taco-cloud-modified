@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 // ---
 // The "relation" (in the database or logic sense) of Ingredients.
 // It's a singleton.
+// This can also be done using Spring annotations. TODO
 // ---
 
 public class IngredientRelation {

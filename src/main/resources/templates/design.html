@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" lang="en-US">
+      xmlns:th="http://www.thymeleaf.org"
+      lang="en-US">
 <head>
     <title>Taco Cloud</title>
     <link rel="stylesheet" th:href="@{/styles.css}"/>
@@ -8,7 +9,9 @@
 
 <body>
 <h1>Design your taco!</h1>
-<img th:src="@{/images/TacoCloud.png}"/>
+
+<!-- Adding a dummy src removes warning from Intellij IDEA checker. It works, but is it worth it? -->
+<img th:src="@{/images/TacoCloud.png}" alt="Taco Cloud logo" src="?" />
 
 <!-- whenever a star appears in expression, we will operate on the "taco" model attribute -->
 <!-- The IDE (Intellij IDEA) knows that ${taco} is implemented by the "Taco" session-backing bean -->
@@ -27,7 +30,9 @@
         <div class="ingredient-group" id="wraps">
             <h3>Designate your wrap:</h3>
             <div th:each="ingredient : ${wrap}">
-                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                <label>Designate your wrap
+                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                </label>
                 <span th:text="${ingredient.name}">INGREDIENT</span><br/>
             </div>
         </div>
@@ -38,7 +43,9 @@
         <div class="ingredient-group" id="proteins">
             <h3>Pick your protein:</h3>
             <div th:each="ingredient : ${protein}">
-                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                <label>Pick your protein
+                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                </label>
                 <span th:text="${ingredient.name}">INGREDIENT</span><br/>
             </div>
         </div>
@@ -49,7 +56,9 @@
         <div class="ingredient-group" id="cheeses">
             <h3>Choose your cheese:</h3>
             <div th:each="ingredient : ${cheese}">
-                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                <label>Choose your cheese
+                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                </label>
                 <span th:text="${ingredient.name}">INGREDIENT</span><br/>
             </div>
         </div>
@@ -60,18 +69,22 @@
         <div class="ingredient-group" id="veggies">
             <h3>Determine your veggies:</h3>
             <div th:each="ingredient : ${veggies}">
-                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                <label>Determine your veggies
+                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                </label>
                 <span th:text="${ingredient.name}">INGREDIENT</span><br/>
             </div>
         </div>
 
-        <!-- all ingredients found under key "suces" in the [session model]
+        <!-- all ingredients found under key "sauces" in the SESSION MODEL
         their ids are captured in "ingredients", an array of string -->
 
         <div class="ingredient-group" id="sauces">
             <h3>Select your sauce:</h3>
             <div th:each="ingredient : ${sauce}">
-                <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                <label>Select your sauce
+                    <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}"/>
+                </label>
                 <span th:text="${ingredient.name}">INGREDIENT</span><br/>
             </div>
         </div>

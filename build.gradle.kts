@@ -31,7 +31,10 @@ dependencies {
     implementation("org.jetbrains:annotations:24.0.0")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
 
-    testImplementation("junit:junit:4.13.1")
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    // testImplementation("junit:junit:4.13.1")
+
     // https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator
     // implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
 
@@ -42,6 +45,7 @@ dependencies {
     testAnnotationProcessor("org.projectlombok:lombok:"  + lombok_version)
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

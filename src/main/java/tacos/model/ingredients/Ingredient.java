@@ -5,6 +5,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+// ---
+// Based on Listing 2.1 of "Spring in Action" 6th edition
+// ---
+
 @Value
 public class Ingredient implements Comparable<Ingredient> {
 
@@ -14,7 +18,7 @@ public class Ingredient implements Comparable<Ingredient> {
     @NotNull String name;
     @NotNull IngredientType type;
 
-    // Constructor is "package visible" only because all the construction is done in "IngredientSpace".
+    // Constructor is "package visible" only because all the construction is done in "IngredientRelation".
 
     Ingredient(@NotNull IngredientId id, @NotNull String name, @NotNull IngredientType type) {
         this.id = id;

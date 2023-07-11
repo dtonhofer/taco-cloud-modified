@@ -3,40 +3,67 @@ package tacos.web;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import tacos.model.taco.Taco;
+import tacos.model.helpers.Helpers;
 import tacos.model.taco.TacoOrder;
 
+// ---
+// Based on Listing 2.8 of "Spring in Action" 6th edition
+// ---
+
 @Slf4j
-@Controller
-@RequestMapping("/orders")
-@SessionAttributes("tacoOrder") // there is a TacoOrder "session backing bean" in the session model
+@Controller // Spring will create an instance of this class in the Spring application context at scan time
+@RequestMapping("/orders") // Kind of requests that this controller handles
+@SessionAttributes("tacoOrder") // The bean stored under "tacoOrder" has session scope (is retained between requests)
 public class OrderController {
 
-    // Called when the order form is requested
-
-    @GetMapping("/current")
-    public String orderForm(@ModelAttribute @NotNull TacoOrder tacoOrder) {
-        log.info("OrderController.orderForm() called");
-        return "orderForm";
+    public OrderController() {
+        log.info(">>> {} created", Helpers.makeLocator(this));
     }
 
-    // Add an initially empty mutable TacoOrder to the SESSION MODEL
-    // This seems to be not called but is needed to the tell the IDE that
+    // Obtain a new, empty TacoOrder instance for insertion into the (session-scoped) model
+    // This seems to never be called.
+    // But is needed to the tell the IDE that
     // th:object="${tacoOrder}" in "orderForm.html" refers a TacoOrder instance!
 
     @ModelAttribute(name = "tacoOrder")
     public @NotNull TacoOrder order() {
-        log.info("Empty TacoOrder created in OrderController.order()");
-        return new TacoOrder();
+        TacoOrder res = new TacoOrder();
+        log.info(">>> {}.order(): new empty {} created",
+                Helpers.makeLocator(this),
+                Helpers.makeLocator(res));
+        return res;
     }
+
+    // This method just because we want to see what happens if we have it
+
+    @ModelAttribute
+    public void dummyCall(@NotNull Model model) {
+        log.info(">>> {}.dummyCall() called with Model {}",
+                Helpers.makeLocator(this),
+                Helpers.makeLocator(model));
+    }
+
+    // ------------------------------------------------------------
+    // Request handling below. The initial path has been given by the class annotation @RequestMapping
+    // ------------------------------------------------------------
 
     // Listing 2.10
     @PostMapping
     public String processOrder(@NotNull TacoOrder order, @NotNull SessionStatus sessionStatus) {
-        log.info("Order submitted: {}", order);
+        log.info(">>> {}.processOrder() called with {}", Helpers.makeLocator(this), Helpers.makeLocator(order));
+        log.info(">>> {}", order);
         sessionStatus.setComplete();
         return "redirect:/";
+    }
+
+    // Called when the order form is requested
+
+    @GetMapping("/current")
+    public String orderForm(@ModelAttribute @NotNull TacoOrder order) {
+        log.info(">>> {}.orderForm() called with {}", Helpers.makeLocator(this), Helpers.makeLocator(order));
+        return "orderForm";
     }
 }

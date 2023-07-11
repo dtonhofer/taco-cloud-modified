@@ -1,5 +1,8 @@
 package tacos;
 
+// 1.1.3 Testing the controller
+// Listing 1.6
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -9,19 +12,20 @@ import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(HomeController.class)   // <1>
+// https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/servlet/MockMvc.html
+
+@WebMvcTest(HomeController.class)
 public class HomeControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;   // <2>
+    private MockMvc mockMvc;
 
     @Test
     public void testHomePage() throws Exception {
-        mockMvc.perform(get("/"))    // <3>
-                .andExpect(status().isOk())  // <4>
-                .andExpect(view().name("home"))  // <5>
-                .andExpect(content().string(           // <6>
-                        containsString("Welcome to...")));
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(content().string(containsString("Welcome to...")));
     }
 
 }
