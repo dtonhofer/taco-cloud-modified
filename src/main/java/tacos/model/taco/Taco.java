@@ -23,6 +23,10 @@ import java.util.stream.Collectors;
 // Getters and setters are created by Lombok via the @Data annotation.
 // ---
 
+// Design problem: "Taco" may well need a dedicated ID, not only a "name".
+// Or if the "name" *is* the ID, then the object that manages the Taco instances
+// (i.e. a "TacoOrder" instance) has to check for duplicate IDs.
+
 @Slf4j
 @Data
 public class Taco {
@@ -37,15 +41,12 @@ public class Taco {
         log.info(">>> {} created from existing {}", Helpers.makeLocator(this), Helpers.makeLocator(existing));
     }
 
-    // Design problem: "Taco" may well need a dedicated ID, not only a "name".
-    // Or if the "name" *is* the ID, then the object that manages the Taco instances
-    // (i.e. a "TacoOrder" instance) has to check for duplicate IDs.
-
     @jakarta.validation.constraints.NotNull // runs at validation time
     @Size(min = 5, message = "Name must be at least 5 characters long")
     private String name;
 
-    // "ingredients" set is replaced completely in a setter, but is initially not null
+    // The "ingredients" set is replaced "as a whole" in a Lombok-generated setter
+    // method, but is initially a not-null, but empty Set.
 
     @jakarta.validation.constraints.NotNull // runs at validation time
     @Size(min = 1, message = "You must choose at least 1 ingredient")
@@ -90,8 +91,11 @@ public class Taco {
 
     @Override
     public String toString() {
-        StringBuilder buf = new StringBuilder("Taco '" + name + "'\n");
-        ingredients.forEach(ingr -> { buf.append("  ");buf.append(ingr);buf.append("\n"); });
+        StringBuilder buf = new StringBuilder();
+        buf.append("Taco '");
+        buf.append(name);
+        buf.append("'\n");
+        ingredients.forEach(ingredient -> { buf.append("  ");buf.append(ingredient);buf.append("\n"); });
         return buf.toString();
     }
 

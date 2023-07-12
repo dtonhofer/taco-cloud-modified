@@ -1,11 +1,14 @@
 package tacos.web;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import tacos.model.helpers.ErrorPrinter;
 import tacos.model.helpers.Helpers;
 import tacos.model.taco.TacoOrder;
 
@@ -50,13 +53,28 @@ public class OrderController {
     // Request handling below. The initial path has been given by the class annotation @RequestMapping
     // ------------------------------------------------------------
 
+    private final static int indentCount = 3;
+
     // Listing 2.10
     @PostMapping
-    public String processOrder(@NotNull TacoOrder order, @NotNull SessionStatus sessionStatus) {
-        log.info(">>> {}.processOrder() called with {}", Helpers.makeLocator(this), Helpers.makeLocator(order));
-        log.info(">>> {}", order);
-        sessionStatus.setComplete();
-        return "redirect:/";
+    public String processOrder(@NotNull @Valid TacoOrder tacoOrder,  @NotNull Errors errors, @NotNull SessionStatus sessionStatus) {
+        log.info(">>> {}.processOrder()", Helpers.makeLocator(this));
+        log.info(">>>>>> 'tacoOrder' argument is {}",Helpers.makeLocator(tacoOrder));
+        if (errors.hasErrors()) {
+            log.info(">>>>>> 'errors' argument is {}",Helpers.makeLocator(errors));
+            log.info(">>>>>> errors detail");
+            String err = ErrorPrinter.printErrors(errors, indentCount);
+            log.info(ErrorPrinter.indent(err,indentCount));
+        }
+        if (errors.hasErrors()) {
+            return "redirect:/orders/current";
+        }
+        else {
+            // Clean up session and be ready for a new order (i.e. the TacoOrder
+            // instance is dropped from the session-scoped model)
+            sessionStatus.setComplete();
+            return "redirect:/";
+        }
     }
 
     // Called when the order form is requested

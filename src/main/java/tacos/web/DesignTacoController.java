@@ -1,10 +1,13 @@
 package tacos.web;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import tacos.model.helpers.ErrorPrinter;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientId;
@@ -48,7 +51,7 @@ public class DesignTacoController {
             // Lower-casing is needed because the Thymeleaf template contains the names in lowercase:
             // "${cheese}", "${veggies}" etc.
             String key = type.name().toLowerCase();
-            assert IngredientType.valueOf(key) == type;
+            assert IngredientType.valueOf(key.toUpperCase()) == type; // Java's valueOf() demands correct case!
             model.addAttribute(key, Collections.unmodifiableSet(IngredientRelation.relation.getByTypeSorted(type)));
         }
     }
@@ -124,30 +127,44 @@ public class DesignTacoController {
     // ----------------------
     // From Listing 2.6.
     // This is eventually called when the client POSTs to "/design" URL.
-    // The "tacoOrder" is labeled as "ModelAttribute" so comes from the "session model".
-    // The "taco" is the information that was POSTed, already suitable marshalled into a "Taco" instance. Nice!
-    // Can "taco" or "tacoOrder" be null? Could the mutable bean "taco" be invalid? The latter is quite possible!
+    //
+    // - The "taco" is the information that was POSTed, already suitable marshalled into a "Taco" instance.
+    // - The "tacoOrder" comes from the session-scoped part of the model.
+    // - The "errors" argument lists validation errors, if any
+    //   The annotation @Valid makes Spring framework run all the validations implied by annotations
+    //   on Taco fields. Any errors raised go into the "errors" object.
+    //   The "errors" object is not null, even if there were no errors.
+    //
+    // As none of the arguments are supposed to be null, to indicate that we add
+    // org.jetbrains.annotations.NoNull annotations.
+    //
+    // For Errors, see:
+    // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/Errors.html
+    //
+    // You may or may not have a method accepting an "Errors" parameter, but if you don't
+    // and there is a validation error, Spring raises an exception, leading to HTTP ERROR 400, "Bad Request"
     // ----------------------
 
-    @PostMapping
-    public String processTaco(@NotNull Taco taco, @ModelAttribute @NotNull TacoOrder tacoOrder) {
-        log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
-        log.info(">>>>>> called with {}",Helpers.makeLocator(taco));
-        log.info(">>>>>> called with {}",Helpers.makeLocator(tacoOrder));
-        tacoOrder.addTaco(taco);
-        return "redirect:/orders/current";
-    }
+    private final static int indentCount = 3;
 
-    /*
     @PostMapping
-    public String processTaco(@Valid Taco taco, Errors errors, @ModelAttribute TacoOrder tacoOrder) {
+    public String processTaco(@NotNull @Valid Taco taco, @NotNull Errors errors, @ModelAttribute @NotNull TacoOrder tacoOrder) {
+        log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
+        log.info(">>>>>> 'taco' argument is {}",Helpers.makeLocator(taco));
+        log.info(">>>>>> 'tacoOrder' argument is {}",Helpers.makeLocator(tacoOrder));
+        if (errors.hasErrors()) {
+            log.info(">>>>>> 'errors' argument is {}",Helpers.makeLocator(errors));
+            log.info(">>>>>> errors detail");
+            String err = ErrorPrinter.printErrors(errors, indentCount);
+            log.info(ErrorPrinter.indent(err,indentCount));
+        }
         if (errors.hasErrors()) {
             return "design";
         }
-        tacoOrder.addTaco(taco);
-        log.info("Processing taco: {}", taco);
-        return "redirect:/orders/current";
+        else {
+            tacoOrder.addTaco(taco);
+            return "redirect:/orders/current";
+        }
     }
-     */
 
 }
