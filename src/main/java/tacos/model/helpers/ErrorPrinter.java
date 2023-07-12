@@ -121,10 +121,10 @@ public class ErrorPrinter {
         buf.append("Description:");
         buf.append("\n");
         // buf.append(objError); // a very long line
+        // TODO: This can be made more readable!!
         buf.append(indent(recut(objError.toString()), indentCount));
         {
-            final Object wrapped = objError.unwrap(Object.class);
-            assert wrapped != null;
+            final @NotNull Object wrapped = objError.unwrap(Object.class);
             {
                 buf.append("\n");
                 buf.append("Wraps: ");

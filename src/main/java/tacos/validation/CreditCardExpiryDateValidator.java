@@ -71,8 +71,8 @@ public class CreditCardExpiryDateValidator implements ConstraintValidator<Credit
         if (!matcher.matches()) {
             return new AnalysisResult("Raw value '" + value + "' does not match regular expression " + pat.pattern());
         }
-        final var ccMonth = Integer.valueOf(matcher.group(1));
-        final var ccYear = Integer.valueOf(matcher.group(2));
+        final var ccMonth = Integer.parseInt(matcher.group(1));
+        final var ccYear = Integer.parseInt(matcher.group(2));
         if (ccMonth < 1 || 12 < ccMonth) {
             return new AnalysisResult("Month is " + ccMonth + ", and thus out of bounds");
         }
