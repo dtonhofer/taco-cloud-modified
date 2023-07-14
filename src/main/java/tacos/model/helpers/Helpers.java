@@ -12,8 +12,9 @@ public abstract class Helpers {
     public final static int usualIndentCount = 3;
 
     // Make a String to identify a given object. The string will be inserted into logging messages
+    // Object may be null.
 
-    public static String makeLocator(@NotNull Object obj) {
+    public static String makeLocator(Object obj) {
         String res;
         if (obj == null) {
             res = "(null)";
