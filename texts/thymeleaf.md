@@ -5,6 +5,7 @@
 - [Thymeleaf documentation](https://www.thymeleaf.org/documentation.html)
 - [Getting started with the Standard dialects in 5 minutes](https://www.thymeleaf.org/doc/articles/standarddialect5minutes.html)
 - [Thymeleaf 3.1 and Spring](https://www.thymeleaf.org/doc/tutorials/3.1/thymeleafspring.html)
+- [Comments and Blocks](https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#comments-and-blocks) - how to write comments that are removed by Thymeleaf
 - Thymeleaf API docs
    - [thymeleaf 3.1.1.RELEASE API](https://www.thymeleaf.org/apidocs/thymeleaf/3.1.1.RELEASE/)
    - [thymeleaf-spring6 3.1.1.RELEASE API](https://www.thymeleaf.org/apidocs/thymeleaf-spring6/3.1.1.RELEASE/)
