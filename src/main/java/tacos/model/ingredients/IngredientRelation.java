@@ -2,22 +2,32 @@ package tacos.model.ingredients;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // ---
-// The "relation" (in the database or logic sense) of Ingredients.
+// The "relation" (in sense of "database relation" or "first-order logic relation") of Ingredients.
 // It's a singleton.
-// This can also be done using Spring annotations. TODO
+// Instead of creating and holding the singleton ourselves, we let Spring Framework do it for us.
+// See https://www.baeldung.com/spring-bean-scopes
 // ---
 
+@Component
 public class IngredientRelation {
 
     // unique canonical instance (i.e. singleton) of the relation
+    // public final static IngredientRelation relation = new IngredientRelation();
 
-    public final static IngredientRelation relation = new IngredientRelation();
+    @Bean // Indicates that a method produces a bean to be managed by the Spring container.
+    @Scope("singleton")
+    public static IngredientRelation ingredientRelation() {
+        return new IngredientRelation();
+    }
 
     // The relation is implemented by a map.
     // Maybe the map should be immutable.

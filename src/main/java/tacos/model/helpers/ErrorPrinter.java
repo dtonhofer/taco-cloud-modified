@@ -13,6 +13,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static tacos.model.helpers.Helpers.indent;
+import static tacos.model.helpers.Helpers.notEndsInNewline;
+
 // ---
 // "No Rights Reserved"
 // This code snippet is under
@@ -78,7 +81,7 @@ public class ErrorPrinter {
     }
 
     // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/ObjectError.html
-    // The returned string has no final NL for proper printing in the caller
+    // The returned string has no final NL for proper printing in the caller.
 
     private static @NotNull String handleObjectError(@NotNull ObjectError objError, int indentCount) {
         StringBuilder buf = new StringBuilder();
@@ -88,9 +91,9 @@ public class ErrorPrinter {
         return buf.toString();
     }
 
-    // FieldError is a specialization of ObjectError
+    // "FieldError" is a subclass of "ObjectError"
     // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/FieldError.html
-    // The returned string has no final NL for proper printing in the caller
+    // The returned string has no final NL for proper printing in the caller.
 
     private static @NotNull String handleFieldError(@NotNull FieldError fieldError, int indentCount) {
         StringBuilder buf = new StringBuilder();
@@ -109,7 +112,7 @@ public class ErrorPrinter {
         return buf.toString();
     }
 
-    // The returned string has no final NL for proper printing in the caller
+    // The returned string has no final NL for proper printing in the caller.
 
     private static @NotNull String handleObjectErrorContent(@NotNull ObjectError objError, int indentCount) {
         StringBuilder buf = new StringBuilder();
@@ -120,8 +123,9 @@ public class ErrorPrinter {
         buf.append("\n");
         buf.append("Description:");
         buf.append("\n");
-        // buf.append(objError); // a very long line
-        // TODO: This can be made more readable!!
+        // TODO: We don't not analyze "objError" further, but just dump it into a string,
+        // than is then formatted. A proper solution would ferret out fields of interest.
+        // but this is good enough for now.
         buf.append(indent(recut(objError.toString()), indentCount));
         {
             final @NotNull Object wrapped = objError.unwrap(Object.class);
@@ -137,30 +141,8 @@ public class ErrorPrinter {
         return buf.toString();
     }
 
-    // My own indent, which unlike String.indent() does NOT add a NL to the last line if there isn't one
-    // Why!!
-
-    public static @NotNull String indent(@NotNull String text, int indentCount) {
-        if (indentCount <= 0) {
-            return text;
-        } else {
-            final String prefix = IntStream.range(0, indentCount).mapToObj(x -> " ").collect(Collectors.joining()); // this should be buffered
-            final String[] lines = text.split("\n");
-            final String res = Arrays.stream(lines).map(line -> prefix + line).collect(Collectors.joining("\n"));
-            assert notEndsInNewline(res);
-            return res;
-        }
-    }
-
-    public static boolean notEndsInNewline(@NotNull String x) {
-        return x.isEmpty() || !"\n".equals(x.substring(x.length() - 1));
-    }
-
-    public static boolean notEndsInNewline(@NotNull StringBuilder x) {
-        return x.isEmpty() || !"\n".equals(x.substring(x.length() - 1));
-    }
-
-    // A primitive way of splitting a very long line at interesting locations
+    // A primitive way of splitting a very long line at interesting locations.
+    //
 
     private final static int maxLength = 70;
 

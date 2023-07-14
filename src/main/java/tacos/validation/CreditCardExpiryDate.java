@@ -10,7 +10,15 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-// Explainer at https://blog.payara.fish/getting-started-with-jakarta-ee-9-jakarta-validation
+// ---
+// "No Rights Reserved"
+// This code snippet is under
+// https://creativecommons.org/share-your-work/public-domain/cc0/
+// ---
+
+// ---
+// A special "Jakarta Bean Validation" annotation to check credit card expiry date
+// ---
 
 @Retention(RUNTIME)
 @Target( { ElementType.METHOD, ElementType.FIELD })
@@ -18,7 +26,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = CreditCardExpiryDateValidator.class)
 public @interface CreditCardExpiryDate {
 
-    String message(); // no default
+    String message(); // no default; in this case, the message is created by the "validator" in any case
 
     Class<?>[] groups() default {};
 

@@ -53,23 +53,26 @@ public class OrderController {
     // Request handling below. The initial path has been given by the class annotation @RequestMapping
     // ------------------------------------------------------------
 
-    private final static int indentCount = 3;
+    // "Errors" must be declared immediately after the "TacoOrder" or you
+    // will get an internal server error.
 
     // Listing 2.10
     @PostMapping
-    public String processOrder(@NotNull @Valid TacoOrder tacoOrder,  @NotNull Errors errors, @NotNull SessionStatus sessionStatus) {
+    public String processOrder(@NotNull @Valid TacoOrder tacoOrder, @NotNull Errors errors, @NotNull SessionStatus sessionStatus) {
         log.info(">>> {}.processOrder()", Helpers.makeLocator(this));
-        log.info(">>>>>> 'tacoOrder' argument is {}",Helpers.makeLocator(tacoOrder));
+        log.info(">>>>>> 'tacoOrder' argument is {}", Helpers.makeLocator(tacoOrder));
+        final int indentCount = 3;
         if (errors.hasErrors()) {
-            log.info(">>>>>> 'errors' argument is {}",Helpers.makeLocator(errors));
+            log.info(">>>>>> 'errors' argument is {}", Helpers.makeLocator(errors));
             log.info(">>>>>> errors detail");
             String err = ErrorPrinter.printErrors(errors, indentCount);
-            log.info(ErrorPrinter.indent(err,indentCount));
+            log.info(Helpers.indent(err, indentCount));
         }
         if (errors.hasErrors()) {
-            return "redirect:/orders/current";
-        }
-        else {
+            // Just redisplay the order form with the TacoOrder already set up.
+            // The form will display all the errors in the "Fields" class available to Thymeleaf.
+            return "orderForm";
+        } else {
             // Clean up session and be ready for a new order (i.e. the TacoOrder
             // instance is dropped from the session-scoped model)
             sessionStatus.setComplete();

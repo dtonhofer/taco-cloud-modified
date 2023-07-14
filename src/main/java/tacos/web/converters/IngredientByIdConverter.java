@@ -20,14 +20,19 @@ import tacos.model.ingredients.IngredientRelation;
 @Component  // Spring will create an instance of this class in the Spring application context at scan time
 public class IngredientByIdConverter implements Converter<String, Ingredient> {
 
-    public IngredientByIdConverter() {
+    private final IngredientRelation ingredientRelation;
+
+    // "ingredientRelation" is constructor-injected at scan time.
+
+    public IngredientByIdConverter(@NotNull IngredientRelation ingredientRelation) {
+        this.ingredientRelation = ingredientRelation;
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
 
     @Override
     @Nullable
     public Ingredient convert(@NotNull String id) {
-        var res = IngredientRelation.relation.getById(id);
+        var res = ingredientRelation.getById(id);
         log.info(">>> {} converting {} to {}", Helpers.makeLocator(this), id, res);
         return res;
     }

@@ -69,6 +69,8 @@ public class CreditCardExpiryDateValidator implements ConstraintValidator<Credit
     public static AnalysisResult analyze(@NotNull String value) {
         final Matcher matcher = pat.matcher(value);
         if (!matcher.matches()) {
+            // TODO: Funnily enough, the template engine cannot handle a dual single quote
+            // TODO: It replaces it by a single &#39;
             return new AnalysisResult("Raw value '" + value + "' does not match regular expression " + pat.pattern());
         }
         final var ccMonth = Integer.parseInt(matcher.group(1));

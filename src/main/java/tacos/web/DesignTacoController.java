@@ -3,6 +3,7 @@ package tacos.web;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,11 +20,11 @@ import tacos.model.taco.TacoOrder;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static tacos.model.helpers.Helpers.indent;
+
 // ---
 // Based on Listing 2.4 of "Spring in Action" 6th edition
 // ---
-
-// Connect to: http://localhost:8080/design
 
 @Slf4j
 @Controller // Spring will create an instance of this class in the Spring application context at scan time
@@ -31,10 +32,14 @@ import java.util.stream.Collectors;
 @SessionAttributes("tacoOrder") // The bean stored under "tacoOrder" has session scope (is retained between requests)
 public class DesignTacoController {
 
-    private final static List<Taco> predefinedTacos = Collections.unmodifiableList(makeListOfPredefinedTacos());
     private final static Random rand = new Random();
+    private final IngredientRelation ingredientRelation;
+    private final List<Taco> predefinedTacos;
 
-    public DesignTacoController() {
+    // @Autowired autowired annotation is not even needed anymore
+    public DesignTacoController(@NotNull IngredientRelation ingredientRelation) {
+        this.ingredientRelation = ingredientRelation;
+        this.predefinedTacos =  Collections.unmodifiableList(makeListOfPredefinedTacos());
         log.info(">>> {} created",Helpers.makeLocator(this));
     }
 
@@ -52,7 +57,7 @@ public class DesignTacoController {
             // "${cheese}", "${veggies}" etc.
             String key = type.name().toLowerCase();
             assert IngredientType.valueOf(key.toUpperCase()) == type; // Java's valueOf() demands correct case!
-            model.addAttribute(key, Collections.unmodifiableSet(IngredientRelation.relation.getByTypeSorted(type)));
+            model.addAttribute(key, Collections.unmodifiableSet(ingredientRelation.getByTypeSorted(type)));
         }
     }
 
@@ -87,25 +92,25 @@ public class DesignTacoController {
         return taco;
     }
 
-    private static Taco makeTaco(String name, String... stringIds) {
+    private Taco makeTaco(String name, String... stringIds) {
         Taco res = new Taco();
         res.setName(name);
         Set<Ingredient> set =
                 Arrays.stream(stringIds)
                         .map(IngredientId::new)
-                        .map(IngredientRelation.relation::getById)
+                        .map(ingredientRelation::getById)
                         .collect(Collectors.toSet());
         res.setIngredients(set);
         return res;
     }
 
-    private static List<Taco> makeListOfPredefinedTacos() {
+    private List<Taco> makeListOfPredefinedTacos() {
         List<Taco> res = new LinkedList<>();
         res.add(makeTaco("Full fat", "FLTO", "GRBF", "CHED", "JACK", "SRCR"));
         res.add(makeTaco("El veggie", "COTO", "TMTO", "LETC", "SLSA"));
         res.add(makeTaco("Just Lettuce", "FLTO", "LETC", "SRCR"));
         res.add(makeTaco("Leon the Professional",
-                IngredientRelation.relation
+                ingredientRelation
                         .getIngredientStream()
                         .map(Ingredient::getId)
                         .map(IngredientId::getRaw)
@@ -145,8 +150,6 @@ public class DesignTacoController {
     // and there is a validation error, Spring raises an exception, leading to HTTP ERROR 400, "Bad Request"
     // ----------------------
 
-    private final static int indentCount = 3;
-
     @PostMapping
     public String processTaco(@NotNull @Valid Taco taco, @NotNull Errors errors, @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
@@ -155,8 +158,8 @@ public class DesignTacoController {
         if (errors.hasErrors()) {
             log.info(">>>>>> 'errors' argument is {}",Helpers.makeLocator(errors));
             log.info(">>>>>> errors detail");
-            String err = ErrorPrinter.printErrors(errors, indentCount);
-            log.info(ErrorPrinter.indent(err,indentCount));
+            String err = ErrorPrinter.printErrors(errors, Helpers.usualIndentCount);
+            log.info(indent(err));
         }
         if (errors.hasErrors()) {
             return "design";

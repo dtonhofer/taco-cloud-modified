@@ -4,13 +4,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientRelation;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // ---
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Data
+@Component
 public class Taco {
 
     public Taco() {
@@ -72,13 +72,13 @@ public class Taco {
     }
 
     @SuppressWarnings("unused")
-    public void _setIngredients(@NotNull String[] in) {
+    public void _setIngredients(@NotNull String[] in, IngredientRelation relation) {
         if (log.isDebugEnabled()) {
             String contents = Arrays.stream(in).collect(Collectors.joining(",", "[", "]"));
             log.debug("setIngredients() called with {}", contents);
         }
         for (String id : in) {
-            Ingredient ing = IngredientRelation.relation.getById(id);
+            Ingredient ing = relation.getById(id);
             if (ing == null) {
                 log.warn("No ingredient corresponds to id {}", id);
             } else {
@@ -92,10 +92,21 @@ public class Taco {
     @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("Taco '");
-        buf.append(name);
-        buf.append("'\n");
-        ingredients.forEach(ingredient -> { buf.append("  ");buf.append(ingredient);buf.append("\n"); });
+        buf.append("Taco");
+        if (name != null) {
+            buf.append(" '");
+            buf.append(name);
+            buf.append("'");
+        }
+        else {
+            buf.append(" (name is null)");
+        }
+        if (!ingredients.isEmpty()) {
+            buf.append("\n");
+            String text = ingredients.stream().map(Ingredient::toString).collect(Collectors.joining("\n"));
+            String indented = Helpers.indent(text); // no final "\n"
+            buf.append(indented);
+        }
         return buf.toString();
     }
 

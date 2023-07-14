@@ -10,11 +10,16 @@
 <body>
 <h1>Design your taco!</h1>
 
-<!-- Adding a dummy src removes warning from Intellij IDEA checker. It works, but is it worth it? -->
+<!--/*
+   Adding a dummy src removes warning from Intellij IDEA checker. It works, but is it worth it?
+*/-->
+
 <img th:src="@{/images/TacoCloud.png}" alt="Taco Cloud logo" src="?" />
 
-<!-- whenever a star appears in expression, we will operate on the "taco" model attribute -->
-<!-- The IDE (Intellij IDEA) knows that ${taco} is implemented by the "Taco" session-backing bean -->
+<!--/*
+   Root object is whatever is stored under key 'taco' (i.e. a Taco).
+   The IDE (Intellij IDEA) knows that ${taco} is implemented by the "Taco" session-backing bean.
+*/-->
 
 <form method="POST" th:object="${taco}">
 
@@ -24,59 +29,76 @@
 
     <div class="grid">
 
-        <!-- all ingredients found under key "wrap" in the SESSION MODEL
-        their ids are captured in "ingredients", an array of string -->
+        <!--/*
+           All ingredients found under key "wrap" in the SESSION MODEL
+           their ids are captured in "ingredients", an array of string
+        */-->
 
         <div class="ingredient-group" id="wraps">
             <h3>Designate your wrap:</h3>
             <div th:each="ingredient : ${wrap}">
+                <!--/* IntellijIDEA code analysis will complain about "missing associated label below */-->
                 <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
                 <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
-                <!-- Thymeleaf adds a hidden input name "_ingredients" with value "on", probably to keep track of the ingredients -->
-                <!-- If the Taco bean already has the ingredient matching "value" in its internal set of ingredients,
-                     Thymeleaf adds the attribute checked="checked" to the input field. Pretty neat! -->
+                <!--/*
+                   Thymeleaf adds a hidden input name "_ingredients" with value "on", probably to keep track of the ingredients.
+                   If the Taco bean already has the ingredient matching "value" in its internal set of ingredients,
+                   Thymeleaf adds the attribute checked="checked" to the input field. Pretty neat!
+                */ -->
             </div>
         </div>
 
-        <!-- all ingredients found under key "protein" in the SESSION MODEL
-        their ids are captured in "ingredients", an array of string -->
+        <!--/*
+           all ingredients found under key "protein" in the SESSION MODEL
+           their ids are captured in "ingredients", an array of string
+        */-->
 
         <div class="ingredient-group" id="proteins">
             <h3>Pick your protein:</h3>
             <div th:each="ingredient : ${protein}">
+                <!--/* IntellijIDEA code analysis will complain about "missing associated label below */-->
                 <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
                 <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
-        <!-- all ingredients found under key "protein" in the SESSION MODEL
-        their ids are captured in "ingredients", an array of string -->
+        <!--/*
+           all ingredients found under key "protein" in the SESSION MODEL
+           their ids are captured in "ingredients", an array of string
+        */-->
 
         <div class="ingredient-group" id="cheeses">
             <h3>Choose your cheese:</h3>
             <div th:each="ingredient : ${cheese}">
+                <!--/* IntellijIDEA code analysis will complain about "missing associated label below */-->
                 <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
                 <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
-        <!-- all ingredients found under key "veggies" in the SESSION MODEL
-        their ids are captured in "ingredients", an array of string -->
+        <!--/*
+           all ingredients found under key "veggies" in the SESSION MODEL
+           their ids are captured in "ingredients", an array of string
+        */-->
 
         <div class="ingredient-group" id="veggies">
             <h3>Determine your veggies:</h3>
             <div th:each="ingredient : ${veggies}">
+                <!--/* IntellijIDEA code analysis will complain about "missing associated label below */-->
                 <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
                 <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
         </div>
 
-        <!-- all ingredients found under key "sauces" in the SESSION MODEL
-        their ids are captured in "ingredients", an array of string -->
+        <!--/*
+           all ingredients found under key "sauces" in the SESSION MODEL
+           their ids are captured in "ingredients", an array of string
+        */-->
 
         <div class="ingredient-group" id="sauces">
             <h3>Select your sauce:</h3>
             <div th:each="ingredient : ${sauce}">
+                <!--/* IntellijIDEA code analysis will complain about "missing associated label below */-->
                 <input th:field="*{ingredients}" type="checkbox" th:value="${ingredient.id.raw}" th:id="${ingredient.id.raw}"/>
                 <label th:for="${ingredient.id.raw}" th:text="${ingredient.name}">INGREDIENT</label>
             </div>
@@ -88,7 +110,9 @@
         <h3>Name your taco creation:</h3>
         <div>
             <label for="taco_name" >Name your taco creation</label>
-            <!-- "value" attribute of input is set from taco attribute -->
+            <!--/*
+               "value" attribute of input is set from taco attribute "name"
+            */-->
             <input th:field="*{name}" type="text" id="taco_name"/>
         </div>
 
