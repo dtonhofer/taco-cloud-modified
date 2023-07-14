@@ -42,18 +42,21 @@ are called _Annotation Frameworks_:
 
 ## Jakarta Bean Validation
 
-This is located in package `jakarta.validation`, previously (and obsolete-ly) `javax.validation`
+"Jakarta Bean Validation" is the set of annotations and support classes the one encounters in the Spring framework.
 
-### Moving from package `javax.validation` to `jakarta.validation` 
+The current specification is [Jakarta Bean Validation 3.0, October 2020](https://beanvalidation.org/3.0/)
+ 
+Bean validation used to be located in package `javax.validation`, but Oracle has moved the Java EE elements to the 
+Jakarta project so in 3.0, the package has changed. One should now migrate.
 
-By the jOOQ maintainer:
+A note by the jOOQ maintainer:
 
 [jOOQ 3.16 and Java EE vs Jakarta EE](https://blog.jooq.org/jooq-3-16-and-java-ee-vs-jakarta-ee/)
 
 > So, we bit the bullet and moved on. Starting from jOOQ 3.16, Java EE has gone
 > and Jakarta EE is our dependency, where needed.
 
-More stuff under the _validation_ tag: https://blog.jooq.org/tag/validation/
+More stuff under the [_validation_ tag at the jOOQ blog](https://blog.jooq.org/tag/validation/).
 
 ### About
 
@@ -64,9 +67,6 @@ from the Jakarta EE 9 specification.
 Package `jakarta.validation`  is not an implementation rather than the API declaration & 
 specification. The implementation is in fact _Hibernate Validator_.
 
-The package of the Bean Validation API was changed from `javax.validation`
-to `jakarta.validation` going from 2.0 to 3.0 as Oracle "moved it out".
-
 - [Bean Validation Homepage](https://beanvalidation.org/)
 - [Bean Validation 3.0 API docs](https://jakarta.ee/specifications/bean-validation/3.0/apidocs/)
    - [List of constraints in `jakarta.validation.constraints`](https://jakarta.ee/specifications/bean-validation/3.0/apidocs/jakarta/validation/constraints/package-summary.html)
@@ -74,11 +74,18 @@ to `jakarta.validation` going from 2.0 to 3.0 as Oracle "moved it out".
    - [Package summary, Jakarta EE 9 - same](https://jakarta.ee/specifications/platform/9/apidocs/jakarta/validation/constraints/package-summary.html)
 - [Bean Validation 3.0 specification](https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html) 
 - [Additional resources](https://beanvalidation.org/resources/)
-- [JSR-303: Bean Validation JSR, 2009](https://beanvalidation.org/1.0/spec/)
+- Specifications
+   - Current: [Jakarta Bean Validation 3.0, October 2020](https://beanvalidation.org/3.0/)  
+   - Previous: [JSR-380: Bean Validation 2.0, August 2017](https://beanvalidation.org/2.0-jsr380/)
+   - Obsolete: [JSR-303: Bean Validation 1,0, October 2009](https://beanvalidation.org/1.0/spec/)
 
-## Implementation
+#### More
 
-The reference implementation is _JBoss Hibernate Validator_ (currently _8.0.1.Final_)
+A short intro at Baeldung: [Java Bean Validation Basics](https://www.baeldung.com/javax-validation)
+
+### Implementation
+
+The reference implementation is _JBoss Hibernate Validator_ (currently _8.0.1.Final_), available [here](https://hibernate.org/validator/).
 
 This is all in the package `org.hibernate.validator` but direct reference to
 package is generally not needed. 
@@ -133,14 +140,13 @@ For _Spring Boot_, the dependency is _Spring Boot Starter Validation_, written `
 - [A howto at 'reflectoring.io'](https://reflectoring.io/bean-validation-with-spring-boot/)
 - [The chapter on validation in the Spring Boot manual](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#io.validation)
 
-### Custom constraints
+### Custom constraints/validators
 
-How to write custom constraints is explained here:
-[Creating custom constraints](https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#validator-customconstraints)
+Writing custom constrains/validators is quite useful as writing a specific constraint and using it wherever needed
+seems much better than using a generic constraint with the same arguments that appear
+in several places (as in `Range(min=100, max=200)` showing up everywhere). 
 
-This is quite useful as writing a specific constraint and using it wherever needed
-is much better than using a generic constraint with the same parameters that appear
-in several places (as in `Range(min=, max=)`). But you can write things like this too:
+On the other hand you can write things like this too:
 
 ~~~
     final int alpha = 10;
@@ -149,3 +155,16 @@ in several places (as in `Range(min=, max=)`). But you can write things like thi
         
     }
 ~~~
+
+#### Example
+
+I tried this, it seems to work:
+
+[Example code to check a credit card's expiry date](https://github.com/dtonhofer/taco-cloud-modified/tree/master/src/main/java/tacos/validation)
+
+#### Pointers for building custom validators
+
+   - Hibernate: [Creating custom constraints](https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#validator-customconstraints)
+   - Baeldung: [Spring MVC Custom Validation](https://www.baeldung.com/spring-mvc-custom-validator)
+   - Payara blog: [Getting Started with Jakarta EE 9: Jakarta Validation](https://blog.payara.fish/getting-started-with-jakarta-ee-9-jakarta-validation)
+   - Stack Overflow: [Building Dynamic ConstraintViolation Error Messages](https://stackoverflow.com/questions/23702975/building-dynamic-constraintviolation-error-messages)
