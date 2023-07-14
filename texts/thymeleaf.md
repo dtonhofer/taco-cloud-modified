@@ -15,8 +15,9 @@
 
  - [Thymeleaf](https://www.jetbrains.com/help/idea/thymeleaf.html)
 
-##
+## Other
 
  - https://attacomsian.com/blog/spring-boot-thymeleaf-form-handling
  - https://springhow.com/thymeleaf-form-handling/
  - https://stackoverflow.com/questions/58001244/referring-to-the-form-backing-bean-itself-in-spring-thymeleaf
+ - https://www.baeldung.com/thymeleaf-in-spring-mvc
