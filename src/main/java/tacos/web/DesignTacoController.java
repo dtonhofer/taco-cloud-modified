@@ -164,7 +164,6 @@ public class DesignTacoController {
             return "design";
         }
         else {
-            System.out.println(taco.toString());
             tacoOrder.addTaco(taco);
             return "redirect:/orders/current";
         }
