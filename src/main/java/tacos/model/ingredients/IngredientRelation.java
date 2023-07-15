@@ -1,10 +1,12 @@
 package tacos.model.ingredients;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import tacos.model.helpers.Helpers;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,20 +19,16 @@ import java.util.stream.Stream;
 // See https://www.baeldung.com/spring-bean-scopes
 // ---
 
-@Component
+@Slf4j
+@Component // To be scanned by Spring
+@Scope("singleton") // In scope "singleton": create only one
 public class IngredientRelation {
 
-    // unique canonical instance (i.e. singleton) of the relation
-    // public final static IngredientRelation relation = new IngredientRelation();
-
-    @Bean // Indicates that a method produces a bean to be managed by the Spring container.
-    @Scope("singleton")
-    public static IngredientRelation ingredientRelation() {
-        return new IngredientRelation();
+    public IngredientRelation() {
+        log.info(">>> {} **************** created", Helpers.makeLocator(this));
     }
 
-    // The relation is implemented by a map.
-    // Maybe the map should be immutable.
+    // The relation is implemented by a map. Maybe the map should be immutable.
 
     private final Map<IngredientId, Ingredient> map = new HashMap<>();
 

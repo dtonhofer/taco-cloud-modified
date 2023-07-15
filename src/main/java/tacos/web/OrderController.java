@@ -83,7 +83,7 @@ public class OrderController {
     // Called when the order form is requested
 
     @GetMapping("/current")
-    public String orderForm(@ModelAttribute @NotNull TacoOrder order) {
+    public @NotNull String orderForm(@NotNull @ModelAttribute TacoOrder order) {
         log.info(">>> {}.orderForm() called with {}", Helpers.makeLocator(this), Helpers.makeLocator(order));
         return "orderForm";
     }

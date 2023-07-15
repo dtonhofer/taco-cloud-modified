@@ -123,7 +123,7 @@ public class DesignTacoController {
     // ------------------------------------------------------------
 
     @GetMapping
-    public String showDesignForm() {
+    public @NotNull String showDesignForm() {
         log.info(">>> {}.showDesignForm()", Helpers.makeLocator(this));
         return "design";
     }
@@ -134,23 +134,23 @@ public class DesignTacoController {
     //
     // - The "taco" is the information that was POSTed, already suitable marshalled into a "Taco" instance.
     // - The "tacoOrder" comes from the session-scoped part of the model.
-    // - The "errors" argument lists validation errors, if any
+    // - The "errors" argument lists bean validation errors, if any.
     //   The annotation @Valid makes Spring framework run all the validations implied by annotations
     //   on Taco fields. Any errors raised go into the "errors" object.
     //   The "errors" object is not null, even if there were no errors.
     //
-    // As none of the arguments are supposed to be null, to indicate that we add
+    // As none of the arguments are supposed to be null, we add
     // org.jetbrains.annotations.NoNull annotations.
     //
     // For Errors, see:
     // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/Errors.html
     //
-    // You may or may not have a method accepting an "Errors" parameter, but if you don't
-    // and there is a validation error, Spring raises an exception, leading to HTTP ERROR 400, "Bad Request"
+    // You may leave out the "errors" parameter, but if so and there is a validation error,
+    // Spring raises an exception, leading to HTTP ERROR 400, "Bad Request"
     // ----------------------
 
     @PostMapping
-    public String processTaco(@NotNull @Valid Taco taco, @NotNull Errors errors, @ModelAttribute @NotNull TacoOrder tacoOrder) {
+    public @NotNull String processTaco(@NotNull @Valid Taco taco, @NotNull Errors errors, @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
         log.info(">>>>>> 'taco' argument is {}",Helpers.makeLocator(taco));
         log.info(">>>>>> 'tacoOrder' argument is {}",Helpers.makeLocator(tacoOrder));
@@ -164,6 +164,7 @@ public class DesignTacoController {
             return "design";
         }
         else {
+            System.out.println(taco.toString());
             tacoOrder.addTaco(taco);
             return "redirect:/orders/current";
         }
