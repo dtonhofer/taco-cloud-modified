@@ -7,7 +7,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
+import tacos.model.ingredients.IngredientsSource;
+
+import java.util.Optional;
 
 // ---
 // A single instance of component is created by Spring Framework at application startup.
@@ -24,8 +27,8 @@ public class IngredientByIdConverter implements Converter<String, Ingredient> {
 
     // "ingredientRelation" is constructor-injected at scan time.
 
-    public IngredientByIdConverter(@NotNull IngredientRelation ingredientRelation) {
-        this.ingredientRelation = ingredientRelation;
+    public IngredientByIdConverter(@NotNull IngredientsSource ingredientsSource) {
+        this.ingredientRelation = ingredientsSource.refresh();
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
 
@@ -35,8 +38,8 @@ public class IngredientByIdConverter implements Converter<String, Ingredient> {
     @Override
     @Nullable
     public Ingredient convert(@NotNull String id) {
-        var res = ingredientRelation.getById(id);
+        Optional<Ingredient> res = ingredientRelation.getById(id);
         log.trace(">>> {} converting string '{}' to {}", Helpers.makeLocator(this), id, res);
-        return res;
+        return res.orElse(null);
     }
 }

@@ -10,14 +10,12 @@ import tacos.model.helpers.ErrorPrinter;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientType;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static tacos.model.helpers.Helpers.indent;
 
@@ -25,16 +23,20 @@ import static tacos.model.helpers.Helpers.indent;
 public class Common {
 
     public static void addIngredientsToModel(
+            @NotNull Object controller,
             @NotNull Model model,
             @NotNull IngredientRelation relation) {
-        for (IngredientType type : relation.getAvailableTypes()) {
+        log.info(">>> {}.addIngredientsToModel() called with Model {}",
+                Helpers.makeLocator(controller),
+                Helpers.makeLocator(model));
+        for (IngredientType type : relation.getTypesOccurring()) {
             // Instead of ".toString().toLowercase()" use ".name().toLowercase()".
             // Lower-casing is needed because the Thymeleaf template contains the
             // type names in lowercase: "${cheese}", "${veggies}" etc.
             // Otherwise there will be no match
             final String attributeName = type.name().toLowerCase();
             final Set<Ingredient> attributeValue = Collections.unmodifiableSet(relation.getByType(type));
-            assert model.getAttribute(attributeName) == null : "No yet stored in model";
+            assert model.getAttribute(attributeName) == null : "Not yet stored in model";
             model.addAttribute(attributeName, attributeValue);
         }
     }
@@ -44,8 +46,7 @@ public class Common {
     public static @NotNull String processTaco(
             @NotNull @Valid Taco taco,
             @NotNull Errors errors,
-            @ModelAttribute @NotNull TacoOrder tacoOrder,
-            @NotNull IngredientRelation relation) {
+            @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>>>>> 'taco' argument is {}", Helpers.makeLocator(taco));
         log.info(">>>>>> {}", taco.toDetailedString());
         log.info(">>>>>> 'tacoOrder' argument is {}", Helpers.makeLocator(tacoOrder));

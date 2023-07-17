@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class TacoIngredientsValidator implements ConstraintValidator<TacoIngredi
     @Override
     public boolean isValid(@NotNull Set<Ingredient> ingredients, @NotNull ConstraintValidatorContext context) {
         List<String> errors = new LinkedList<>();
-        ingredientRelation.getAvailableTypes().forEach(type -> {
+        ingredientRelation.getTypesOccurring().forEach(type -> {
             List<Ingredient> forThisType = IngredientRelation.getIngredientsByType(ingredients, type);
             if (type.isMandatory() && forThisType.isEmpty()) {
                 errors.add("Select at least one " + type.name().toLowerCase());

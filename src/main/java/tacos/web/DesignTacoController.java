@@ -1,4 +1,4 @@
-package tacos.web.jdbc;
+package tacos.web;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -7,52 +7,43 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import tacos.jdbc.IngredientRepository;
 import tacos.model.helpers.Helpers;
-import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.IngredientType;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
+import tacos.model.ingredients.IngredientsSource;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
 
-import java.util.List;
-
 // ---
 // Based on Listing 2.4 of "Spring in Action" 6th edition
-// Changed according to Chapter 3
 // ---
 
 @Slf4j
-// @Controller // Spring will create an instance of this class in the Spring application context at scan time
+@Controller // Spring will create an instance of this class in the Spring application context at scan time
 @RequestMapping("/design") // Kind of requests that this controller handles
 @SessionAttributes("tacoOrder") // The bean stored under "tacoOrder" has session scope (is retained between requests)
 public class DesignTacoController {
 
-    private final IngredientRepository ingredientRepo;
+    private final IngredientRelation ingredientRelation;
 
-    public DesignTacoController(@NotNull IngredientRepository ingredientRepo) {
-        this.ingredientRepo = ingredientRepo;
-        log.info(">>> {} created", Helpers.makeLocator(this));
+    // Constructor called by Spring at startup time
+
+    public DesignTacoController(@NotNull IngredientsSource ingredientSource) {
+        this.ingredientRelation = ingredientSource.refresh();
+        log.info(">>> {} created with ingredientRelation {}",
+                Helpers.makeLocator(this),
+                Helpers.makeLocator(ingredientSource));
     }
 
-    private IngredientRelation extractRelationFromRepository() {
-        return new IngredientRelation(ingredientRepo.findAll());
-    }
-
-    // Filling the "Session Model" so that the "ingredients" are
-    // available for template processing.
+    // Filling the (request-scoped) session model so that the ingredients are
+    // available for template processing by Thymeleaf.
 
     @ModelAttribute
     public void addIngredientsToModel(@NotNull Model model) {
-        log.info(">>> {}.addIngredientsToModel() called with Model {}",
-                Helpers.makeLocator(this),
-                Helpers.makeLocator(model));
-        final var relation = new IngredientRelation(ingredientRepo.findAll());
-        Common.addIngredientsToModel(model, relation);
+        Common.addIngredientsToModel(this, model, ingredientRelation);
     }
 
-    // Obtain a new, empty TacoOrder instance for insertion into the model.
+    // Obtain a new, empty TacoOrder instance for insertion into the session model.
     // The class is annotated with @SessionAttributes("tacoOrder") so the TacoOrder
     // will go into the session-scoped model.
 
@@ -65,7 +56,7 @@ public class DesignTacoController {
         return res;
     }
 
-    // Obtain a new, empty Taco instance for insertion into the model.
+    // Obtain a new, empty Taco instance for insertion into the session model.
     // (The IDE is aware that "th:object="${taco}" in the template is about a "Taco" instance. Neat!)
 
     @ModelAttribute(name = "taco")
@@ -81,6 +72,10 @@ public class DesignTacoController {
     // Request handling below. The initial path has been given by the class annotation @RequestMapping
     // ------------------------------------------------------------
 
+    // ----------------------
+    // Handle GET.
+    // ----------------------
+
     @GetMapping
     public @NotNull String showDesignForm() {
         log.info(">>> {}.showDesignForm()", Helpers.makeLocator(this));
@@ -88,6 +83,8 @@ public class DesignTacoController {
     }
 
     // ----------------------
+    // Handle POST
+    //
     // From Listing 2.6.
     // This is eventually called when the client POSTs to "/design" URL.
     //
@@ -114,8 +111,7 @@ public class DesignTacoController {
             @NotNull Errors errors,
             @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
-        final var relation = new IngredientRelation(ingredientRepo.findAll());
-        return Common.processTaco(taco, errors, tacoOrder, relation);
+        return Common.processTaco(taco, errors, tacoOrder);
     }
 
 }

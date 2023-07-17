@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientType;
-import tacos.model.ingredients.hardcoded.PrefilledIngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
+import tacos.model.ingredients.IngredientsSource;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
@@ -26,11 +27,13 @@ public class ProposeTacoController {
 
     private final static Random rand = new Random();
 
-    private final PrefilledIngredientRelation ingredientRelation;
+    private final IngredientRelation ingredientRelation;
 
-    public ProposeTacoController(@NotNull PrefilledIngredientRelation ingredientRelation) {
-        this.ingredientRelation = ingredientRelation;
-        log.info(">>> {} created", Helpers.makeLocator(this));
+    public ProposeTacoController(@NotNull IngredientsSource ingredientSource) {
+        this.ingredientRelation = ingredientSource.refresh();
+        log.info(">>> {} created with ingredientRelation {}",
+                Helpers.makeLocator(this),
+                Helpers.makeLocator(ingredientRelation));
     }
 
     // Filling the "Session Model" so that the "ingredients" are
@@ -38,10 +41,7 @@ public class ProposeTacoController {
 
     @ModelAttribute
     public void addIngredientsToModel(@NotNull Model model) {
-        log.info(">>> {}.addIngredientsToModel() called with Model {}",
-                Helpers.makeLocator(this),
-                Helpers.makeLocator(model));
-        Common.addIngredientsToModel(model, ingredientRelation);
+        Common.addIngredientsToModel(this, model, ingredientRelation);
     }
 
     // Obtain a new, empty TacoOrder instance for insertion into the model.
@@ -69,12 +69,12 @@ public class ProposeTacoController {
         log.info(">>> {}.taco(): new {} created",
                 Helpers.makeLocator(this),
                 Helpers.makeLocator(res));
-        log.info(res.toString()); // prints taco details
+        log.info(res.toDetailedString()); // prints taco details
         return res;
     }
 
     private @NotNull Set<Ingredient> proposeIngredients() {
-        final List<IngredientType> types = ingredientRelation.getAvailableTypes();
+        final List<IngredientType> types = ingredientRelation.getTypesOccurring();
         final Set<Ingredient> res = new HashSet<>();
         for (IngredientType type : types) {
             final List<Ingredient> available = new ArrayList<>(ingredientRelation.getByType(type));
@@ -134,7 +134,7 @@ public class ProposeTacoController {
             @NotNull Errors errors,
             @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
-        return Common.processTaco(taco, errors, tacoOrder, ingredientRelation);
+        return Common.processTaco(taco, errors, tacoOrder);
     }
 
 }

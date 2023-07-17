@@ -21,6 +21,7 @@ public abstract class Helpers {
         }
         else {
             res = String.format("%s[0x%xd]", obj.getClass().getName(), System.identityHashCode(obj));
+            // FIXME temporary Taco special
             if (obj instanceof Taco) {
                 res += " named '" + ((Taco) obj).getName() + "'";
             }

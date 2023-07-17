@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientType;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.IngredientRelation;
 import tacos.validation.TacoIngredients;
 
 import java.util.*;
@@ -78,23 +78,18 @@ public class Taco {
     }
 
     @SuppressWarnings("unused")
-    public void _setIngredients(@NotNull String[] in, IngredientRelation relation) {
+    public void _setIngredients(@NotNull String[] in, @NotNull IngredientRelation relation) {
         if (log.isDebugEnabled()) {
             String contents = Arrays.stream(in).collect(Collectors.joining(",", "[", "]"));
             log.debug("setIngredients() called with {}", contents);
         }
         for (String id : in) {
-            Ingredient ing = relation.getById(id);
-            if (ing == null) {
-                log.warn("No ingredient corresponds to id {}", id);
-            } else {
-                ingredients.add(ing);
-            }
+            Optional<Ingredient> ing = relation.getById(id);
+            ing.ifPresentOrElse(
+                    ingredient -> ingredients.add(ingredient),
+                    () -> log.warn("No ingredient corresponds to id {}", id)
+            );
         }
-    }
-
-    public List<Ingredient> getIngredientsByType(@NotNull IngredientType type) {
-        return IngredientRelation.getIngredientsByType(ingredients, type);
     }
 
     // A nicer, multiline Taco printout
@@ -109,7 +104,7 @@ public class Taco {
         } else {
             buf.append(" (name is null)");
         }
-        final List<IngredientType> typesPresent = IngredientRelation.getTypesPresent(ingredients);
+        final List<IngredientType> typesPresent = IngredientRelation.getTypesOccuring(ingredients);
         for (IngredientType type : typesPresent) {
             List<Ingredient> ingredientsByType = IngredientRelation.getIngredientsByType(ingredients, type);
             if (!ingredientsByType.isEmpty()) {
