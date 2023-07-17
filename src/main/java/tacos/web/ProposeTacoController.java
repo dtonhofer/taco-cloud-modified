@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientType;
-import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.model.ingredients.hardcoded.PrefilledIngredientRelation;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
@@ -26,9 +26,9 @@ public class ProposeTacoController {
 
     private final static Random rand = new Random();
 
-    private final IngredientRelation ingredientRelation;
+    private final PrefilledIngredientRelation ingredientRelation;
 
-    public ProposeTacoController(@NotNull IngredientRelation ingredientRelation) {
+    public ProposeTacoController(@NotNull PrefilledIngredientRelation ingredientRelation) {
         this.ingredientRelation = ingredientRelation;
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
@@ -58,6 +58,8 @@ public class ProposeTacoController {
     }
 
     // Obtain a new, randomly filled Taco instance for insertion into the model.
+    // It is actually dangerous to name a method "taco" - IDE autcompletion
+    // may write "taco()." instead of "taco." ...
 
     @ModelAttribute(name = "taco")
     public @NotNull Taco taco() {
@@ -115,6 +117,10 @@ public class ProposeTacoController {
         final String randomName = names[rand.nextInt(names.length)];
         return randomName + " " + randomInt;
     }
+
+    // ------------------------------------------------------------
+    // Request handling below. The initial path has been given by the class annotation @RequestMapping
+    // ------------------------------------------------------------
 
     @GetMapping
     public @NotNull String showDesignForm() {

@@ -1,4 +1,4 @@
-package tacos.web;
+package tacos.web.jdbc;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -7,28 +7,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import tacos.jdbc.IngredientRepository;
 import tacos.model.helpers.Helpers;
+import tacos.model.ingredients.Ingredient;
+import tacos.model.ingredients.IngredientType;
 import tacos.model.ingredients.hardcoded.IngredientRelation;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
 
+import java.util.List;
+
 // ---
 // Based on Listing 2.4 of "Spring in Action" 6th edition
+// Changed according to Chapter 3
 // ---
 
 @Slf4j
-@Controller // Spring will create an instance of this class in the Spring application context at scan time
+// @Controller // Spring will create an instance of this class in the Spring application context at scan time
 @RequestMapping("/design") // Kind of requests that this controller handles
 @SessionAttributes("tacoOrder") // The bean stored under "tacoOrder" has session scope (is retained between requests)
 public class DesignTacoController {
 
-    private final IngredientRelation ingredientRelation;
+    private final IngredientRepository ingredientRepo;
 
-    // "Autowired" annotation is not even needed anymore
-    public DesignTacoController(@NotNull IngredientRelation ingredientRelation) {
-        this.ingredientRelation = ingredientRelation;
+    public DesignTacoController(@NotNull IngredientRepository ingredientRepo) {
+        this.ingredientRepo = ingredientRepo;
         log.info(">>> {} created", Helpers.makeLocator(this));
+    }
+
+    private IngredientRelation extractRelationFromRepository() {
+        return new IngredientRelation(ingredientRepo.findAll());
     }
 
     // Filling the "Session Model" so that the "ingredients" are
@@ -39,7 +48,8 @@ public class DesignTacoController {
         log.info(">>> {}.addIngredientsToModel() called with Model {}",
                 Helpers.makeLocator(this),
                 Helpers.makeLocator(model));
-        Common.addIngredientsToModel(model, ingredientRelation);
+        final var relation = new IngredientRelation(ingredientRepo.findAll());
+        Common.addIngredientsToModel(model, relation);
     }
 
     // Obtain a new, empty TacoOrder instance for insertion into the model.
@@ -104,7 +114,8 @@ public class DesignTacoController {
             @NotNull Errors errors,
             @ModelAttribute @NotNull TacoOrder tacoOrder) {
         log.info(">>> {}.processTaco()", Helpers.makeLocator(this));
-        return Common.processTaco(taco, errors, tacoOrder, ingredientRelation);
+        final var relation = new IngredientRelation(ingredientRepo.findAll());
+        return Common.processTaco(taco, errors, tacoOrder, relation);
     }
 
 }

@@ -10,7 +10,6 @@ import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.IngredientType;
 import tacos.model.ingredients.hardcoded.IngredientRelation;
 import tacos.validation.TacoIngredients;
-import tacos.web.common.Common;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -94,23 +93,14 @@ public class Taco {
         }
     }
 
-    public Set<Ingredient> getIngredientsByType(@NotNull IngredientType type) {
-        return Common.getIngredientsByType(ingredients,type);
+    public List<Ingredient> getIngredientsByType(@NotNull IngredientType type) {
+        return IngredientRelation.getIngredientsByType(ingredients, type);
     }
 
-    // Transform a set of Ingredient into a list of Ingredient, where the
-    // list items are sorted by Ingredient name (the printable cleartext)
+    // A nicer, multiline Taco printout
 
-    private List<Ingredient> setToList(@NotNull Set<Ingredient> ingredients) {
-        List<Ingredient> res = new ArrayList<>(ingredients);
-        res.sort(Comparator.comparing(Ingredient::getName)); // this line is amazing
-        return res;
-    }
-
-    // A nicer Taco printout, but it needs the "relation"
-
-    public String toString(@NotNull IngredientRelation relation) {
-        StringBuilder buf = new StringBuilder();
+    public String toDetailedString() {
+        final StringBuilder buf = new StringBuilder();
         buf.append("Taco");
         if (name != null) {
             buf.append(" '");
@@ -119,13 +109,17 @@ public class Taco {
         } else {
             buf.append(" (name is null)");
         }
-        for (IngredientType type : relation.getAvailableTypes()) {
-            Set<Ingredient> ingredientsByType = getIngredientsByType(type);
+        final List<IngredientType> typesPresent = IngredientRelation.getTypesPresent(ingredients);
+        for (IngredientType type : typesPresent) {
+            List<Ingredient> ingredientsByType = IngredientRelation.getIngredientsByType(ingredients, type);
             if (!ingredientsByType.isEmpty()) {
                 buf.append("\n");
                 buf.append(type);
                 buf.append(": ");
-                buf.append(setToList(ingredientsByType).stream().map(Ingredient::getName).collect(Collectors.joining(" & ")));
+                final String names = ingredientsByType.stream()
+                        .map(Ingredient::getName)
+                        .collect(Collectors.joining(" & "));
+                buf.append(names);
             }
         }
         return buf.toString();

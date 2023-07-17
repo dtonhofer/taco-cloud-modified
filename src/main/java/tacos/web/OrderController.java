@@ -53,10 +53,11 @@ public class OrderController {
     // Request handling below. The initial path has been given by the class annotation @RequestMapping
     // ------------------------------------------------------------
 
-    // "Errors" must be declared immediately after the "TacoOrder" or you
-    // will get an internal server error.
+    // ----------------------
+    // Handle POST. Listing 2.10
+    // "Errors" must be declared immediately after the "TacoOrder" one gets an internal server error.
+    // ----------------------
 
-    // Listing 2.10
     @PostMapping
     public String processOrder(@NotNull @Valid TacoOrder tacoOrder, @NotNull Errors errors, @NotNull SessionStatus sessionStatus) {
         log.info(">>> {}.processOrder()", Helpers.makeLocator(this));
@@ -80,7 +81,9 @@ public class OrderController {
         }
     }
 
-    // Called when the order form is requested
+    // ----------------------
+    // Handle GET.
+    // ----------------------
 
     @GetMapping("/current")
     public @NotNull String orderForm(@NotNull @ModelAttribute TacoOrder order) {

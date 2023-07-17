@@ -47,7 +47,7 @@ public class Common {
             @ModelAttribute @NotNull TacoOrder tacoOrder,
             @NotNull IngredientRelation relation) {
         log.info(">>>>>> 'taco' argument is {}", Helpers.makeLocator(taco));
-        log.info(">>>>>> {}", taco.toString(relation));
+        log.info(">>>>>> {}", taco.toDetailedString());
         log.info(">>>>>> 'tacoOrder' argument is {}", Helpers.makeLocator(tacoOrder));
         if (errors.hasErrors()) {
             log.info(">>>>>> 'errors' argument is {}", Helpers.makeLocator(errors));
@@ -65,7 +65,4 @@ public class Common {
         }
     }
 
-    public static @NotNull Set<Ingredient> getIngredientsByType(@NotNull Collection<Ingredient> coll, @NotNull IngredientType type) {
-        return coll.stream().filter(ingredient -> ingredient.getType() == type).collect(Collectors.toSet());
-    }
 }

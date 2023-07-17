@@ -7,12 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
 import tacos.model.ingredients.hardcoded.IngredientRelation;
-import tacos.web.common.Common;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class TacoIngredientsValidator implements ConstraintValidator<TacoIngredients, Set<Ingredient>> {
@@ -33,7 +31,7 @@ public class TacoIngredientsValidator implements ConstraintValidator<TacoIngredi
     public boolean isValid(@NotNull Set<Ingredient> ingredients, @NotNull ConstraintValidatorContext context) {
         List<String> errors = new LinkedList<>();
         ingredientRelation.getAvailableTypes().forEach(type -> {
-            Set<Ingredient> forThisType = Common.getIngredientsByType(ingredients, type);
+            List<Ingredient> forThisType = IngredientRelation.getIngredientsByType(ingredients, type);
             if (type.isMandatory() && forThisType.isEmpty()) {
                 errors.add("Select at least one " + type.name().toLowerCase());
             }
