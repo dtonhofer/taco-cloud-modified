@@ -17,16 +17,16 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 // ---
 
 // ---
-// A special "Jakarta Bean Validation" annotation to check credit card expiry date
+// A special "Jakarta Bean Validation" annotation to check Taco ingredients
 // ---
 
 @Retention(RUNTIME)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Documented
-@Constraint(validatedBy = CreditCardExpiryDateValidator.class)
-public @interface CreditCardExpiryDate {
+@Constraint(validatedBy = TacoIngredientsValidator.class)
+public @interface TacoIngredients {
 
-    String message() default "Bad expiry date"; // the message is actually created by the "validator"
+    String message() default "Bad ingredients"; // no default; in this case, the message is created by the "validator"
 
     Class<?>[] groups() default {};
 

@@ -1,0 +1,20 @@
+# "Spring in Action" switches to YAML representation in Chapter 3.1.2
+
+logging:
+  level:
+    tacos: DEBUG
+
+spring:
+  thymeleaf:
+    # Template reloading during development
+    prefix: file:src/main/resources/templates/
+    cache: false
+  web:
+    resources:
+      # Static resource reloading during development
+      static-locations: file:src/main/resources/static/
+      cache:
+        period: 0
+  datasource:
+    generate-unique-name: false
+    name: tacocloud

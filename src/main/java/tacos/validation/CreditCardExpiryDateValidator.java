@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CreditCardExpiryDateValidator implements ConstraintValidator<CreditCardExpiryDate, String> {
 
-    public record AnalysisResult(YearMonth ym, String errorMessage) {
+    private record AnalysisResult(YearMonth ym, String errorMessage) {
 
         AnalysisResult(@NotNull YearMonth ym) {
             this(ym, null);

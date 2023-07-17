@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.Serializable;
+import java.util.*;
 
 // ---
 // Based on Listing 2.3 of "Spring in Action" 6th edition
@@ -21,7 +19,16 @@ import java.util.TreeSet;
 
 @Slf4j
 @Data
-public class TacoOrder {
+public class TacoOrder implements Serializable {
+
+    // Added in Chapter 3.1.1
+    private static final long serialVersionUID = 1L;
+
+    // Added in Chapter 3.1.1
+    private Long id;
+
+    // Added in Chapter 3.1.1
+    private Date placedAt;
 
     private Map<String, Taco> tacos = new HashMap<>();
 

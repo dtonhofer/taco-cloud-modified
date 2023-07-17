@@ -19,8 +19,9 @@ public class Ingredient implements Comparable<Ingredient> {
     @NotNull IngredientType type;
 
     // Constructor is "package visible" only because all the construction is done in "IngredientRelation".
+    // TODO: Made public to pull it from the database
 
-    Ingredient(@NotNull IngredientId id, @NotNull String name, @NotNull IngredientType type) {
+    public Ingredient(@NotNull IngredientId id, @NotNull String name, @NotNull IngredientType type) {
         this.id = id;
         this.name = name;
         this.type = type;

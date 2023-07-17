@@ -7,7 +7,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.IngredientRelation;
+import tacos.model.ingredients.IngredientType;
+import tacos.model.ingredients.hardcoded.IngredientRelation;
+import tacos.validation.TacoIngredients;
+import tacos.web.common.Common;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,25 +34,29 @@ import java.util.stream.Collectors;
 @Component
 public class Taco {
 
+    // Field to make Taco database-insertable (Chapter 3.1.1)
+    private Long id;
+
+    // Added in Chapter 3.1.1
+    private Date createdAt = new Date();
+
     public Taco() {
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
 
-    public Taco(final @NotNull Taco existing) {
-        this.setName(existing.getName());
-        this.setIngredients(new HashSet<>(existing.getIngredients()));
-        log.info(">>> {} created from existing {}", Helpers.makeLocator(this), Helpers.makeLocator(existing));
-    }
+    // The validation annotations are check at "validation" time just before the handler method is called
 
-    @jakarta.validation.constraints.NotNull // runs at validation time
+    @jakarta.validation.constraints.NotNull
     @Size(min = 5, message = "Name must be at least 5 characters long")
     private String name;
 
+    // The validation annotations are check at "validation" time just before the handler method is called
     // The "ingredients" set is replaced "as a whole" in a Lombok-generated setter
     // method, but is initially a not-null, but empty Set.
+    // Instead of a single @Size validation, we use a special @TacoIngredients validation
 
-    @jakarta.validation.constraints.NotNull // runs at validation time
-    @Size(min = 1, message = "You must choose at least 1 ingredient")
+    @jakarta.validation.constraints.NotNull
+    @TacoIngredients
     private Set<Ingredient> ingredients = new HashSet<>();
 
     // Let Lombok generate default constructor and getters and setters!
@@ -87,25 +94,39 @@ public class Taco {
         }
     }
 
-    // A nicer Taco printout
+    public Set<Ingredient> getIngredientsByType(@NotNull IngredientType type) {
+        return Common.getIngredientsByType(ingredients,type);
+    }
 
-    @Override
-    public String toString() {
+    // Transform a set of Ingredient into a list of Ingredient, where the
+    // list items are sorted by Ingredient name (the printable cleartext)
+
+    private List<Ingredient> setToList(@NotNull Set<Ingredient> ingredients) {
+        List<Ingredient> res = new ArrayList<>(ingredients);
+        res.sort(Comparator.comparing(Ingredient::getName)); // this line is amazing
+        return res;
+    }
+
+    // A nicer Taco printout, but it needs the "relation"
+
+    public String toString(@NotNull IngredientRelation relation) {
         StringBuilder buf = new StringBuilder();
         buf.append("Taco");
         if (name != null) {
             buf.append(" '");
             buf.append(name);
             buf.append("'");
-        }
-        else {
+        } else {
             buf.append(" (name is null)");
         }
-        if (!ingredients.isEmpty()) {
-            buf.append("\n");
-            String text = ingredients.stream().map(Ingredient::toString).collect(Collectors.joining("\n"));
-            String indented = Helpers.indent(text); // no final "\n"
-            buf.append(indented);
+        for (IngredientType type : relation.getAvailableTypes()) {
+            Set<Ingredient> ingredientsByType = getIngredientsByType(type);
+            if (!ingredientsByType.isEmpty()) {
+                buf.append("\n");
+                buf.append(type.toString());
+                buf.append(": ");
+                buf.append(setToList(ingredientsByType).stream().map(Ingredient::getName).collect(Collectors.joining(" & ")));
+            }
         }
         return buf.toString();
     }

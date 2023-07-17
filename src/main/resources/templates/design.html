@@ -23,9 +23,7 @@
 
 <form method="POST" th:object="${taco}">
 
-    <span class="validationError"
-          th:if="${#fields.hasErrors('ingredients')}"
-          th:errors="*{ingredients}">Ingredient Error</span>
+    <a th:href="@{/propose}" id="another">Propose a randomly filled taco</a><br/>
 
     <div class="grid">
 
@@ -44,7 +42,7 @@
                    Thymeleaf adds a hidden input name "_ingredients" with value "on", probably to keep track of the ingredients.
                    If the Taco bean already has the ingredient matching "value" in its internal set of ingredients,
                    Thymeleaf adds the attribute checked="checked" to the input field. Pretty neat!
-                */ -->
+                */-->
             </div>
         </div>
 
@@ -116,7 +114,16 @@
             <input th:field="*{name}" type="text" id="taco_name"/>
         </div>
 
-        <span class="validationError" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</span>
+        <span class="validationError"
+              th:if="${#fields.hasErrors('ingredients')}"
+              th:errors="*{ingredients}">Ingredient Error</span>
+
+        <br/>
+
+        <span class="validationError"
+              th:if="${#fields.hasErrors('name')}"
+              th:errors="*{name}">Name Error</span>
+
         <br/>
 
         <button>Submit Your Taco</button>

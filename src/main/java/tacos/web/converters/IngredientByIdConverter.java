@@ -7,7 +7,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.Ingredient;
-import tacos.model.ingredients.IngredientRelation;
+import tacos.model.ingredients.hardcoded.IngredientRelation;
 
 // ---
 // A single instance of component is created by Spring Framework at application startup.
@@ -29,11 +29,14 @@ public class IngredientByIdConverter implements Converter<String, Ingredient> {
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
 
+    // This is called a lot from Thymeleaf-calling-Spring-in-IoC-fashion during template processing,
+    // apparently for exhaustive comparison.
+
     @Override
     @Nullable
     public Ingredient convert(@NotNull String id) {
         var res = ingredientRelation.getById(id);
-        log.info(">>> {} converting {} to {}", Helpers.makeLocator(this), id, res);
+        log.trace(">>> {} converting string '{}' to {}", Helpers.makeLocator(this), id, res);
         return res;
     }
 }

@@ -7,29 +7,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import tacos.model.helpers.ErrorPrinter;
 import tacos.model.helpers.Helpers;
+import tacos.model.ingredients.Ingredient;
+import tacos.model.ingredients.IngredientType;
 import tacos.model.ingredients.hardcoded.IngredientRelation;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
 
-import static tacos.model.helpers.Helpers.indent;
-
-// ---
-// Based on Listing 2.4 of "Spring in Action" 6th edition
-// ---
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Controller // Spring will create an instance of this class in the Spring application context at scan time
-@RequestMapping("/design") // Kind of requests that this controller handles
+@RequestMapping("/propose") // Kind of requests that this controller handles
 @SessionAttributes("tacoOrder") // The bean stored under "tacoOrder" has session scope (is retained between requests)
-public class DesignTacoController {
+public class ProposeTacoController {
+
+    private final static Random rand = new Random();
 
     private final IngredientRelation ingredientRelation;
 
-    // "Autowired" annotation is not even needed anymore
-    public DesignTacoController(@NotNull IngredientRelation ingredientRelation) {
+    public ProposeTacoController(@NotNull IngredientRelation ingredientRelation) {
         this.ingredientRelation = ingredientRelation;
         log.info(">>> {} created", Helpers.makeLocator(this));
     }
@@ -58,48 +57,70 @@ public class DesignTacoController {
         return res;
     }
 
-    // Obtain a new, empty Taco instance for insertion into the model.
-    // (The IDE is aware that "th:object="${taco}" in the template is about a "Taco" instance. Neat!)
+    // Obtain a new, randomly filled Taco instance for insertion into the model.
 
     @ModelAttribute(name = "taco")
     public @NotNull Taco taco() {
         Taco res = new Taco();
+        res.setIngredients(proposeIngredients());
+        res.setName(proposeName());
         log.info(">>> {}.taco(): new {} created",
                 Helpers.makeLocator(this),
                 Helpers.makeLocator(res));
+        log.info(res.toString()); // prints taco details
         return res;
     }
 
-    // ------------------------------------------------------------
-    // Request handling below. The initial path has been given by the class annotation @RequestMapping
-    // ------------------------------------------------------------
+    private @NotNull Set<Ingredient> proposeIngredients() {
+        final List<IngredientType> types = ingredientRelation.getAvailableTypes();
+        final Set<Ingredient> res = new HashSet<>();
+        for (IngredientType type : types) {
+            final List<Ingredient> available = new ArrayList<>(ingredientRelation.getByType(type));
+            final int atMost = type.isExclusive() ? 1 : available.size();
+            final int atLeast = type.isMandatory() ? 1 : 0;
+            assert atLeast <= atMost && atMost <= available.size();
+            final int howMany = atLeast + rand.nextInt(atMost - atLeast + 1);
+            assert atLeast <= howMany && howMany <= atMost;
+            // shuffle the ingredients in place and select the "howMany" first
+            Collections.shuffle(available);
+            Set<Ingredient> forThisType = available.stream().limit(howMany).collect(Collectors.toSet());
+            res.addAll(forThisType);
+        }
+        return res;
+    }
+
+    private static @NotNull String proposeName() {
+        final String[] names = new String[]{
+                "Jester",
+                "Touchdown",
+                "Steamroller",
+                "Clean Slate",
+                "Boomstick",
+                "Beanstalk",
+                "Elephant",
+                "Brown Garden",
+                "Desert Avalanche",
+                "Pink Rhino",
+                "Hotcake",
+                "Pigstick",
+                "Dreamstate",
+                "Surprise Party",
+                "Resurrection",
+                "Lunar Eclipse",
+                "Snowslide",
+                "Jungle Citadel",
+                "Ocean Rhino",
+                "Hammer"};
+        final int randomInt = rand.nextInt(99) + 1;
+        final String randomName = names[rand.nextInt(names.length)];
+        return randomName + " " + randomInt;
+    }
 
     @GetMapping
     public @NotNull String showDesignForm() {
         log.info(">>> {}.showDesignForm()", Helpers.makeLocator(this));
         return "design";
     }
-
-    // ----------------------
-    // From Listing 2.6.
-    // This is eventually called when the client POSTs to "/design" URL.
-    //
-    // - The "taco" is the information that was POSTed, already suitable marshalled into a "Taco" instance.
-    // - The "tacoOrder" comes from the session-scoped part of the model.
-    // - The "errors" argument lists bean validation errors, if any.
-    //   The annotation @Valid makes Spring framework run all the validations implied by annotations
-    //   on Taco fields. Any errors raised go into the "errors" object.
-    //   The "errors" object is not null, even if there were no errors.
-    //
-    // As none of the arguments are supposed to be null, we add
-    // org.jetbrains.annotations.NoNull annotations.
-    //
-    // For Errors, see:
-    // https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/validation/Errors.html
-    //
-    // You may leave out the "errors" parameter, but if so and there is a validation error,
-    // Spring raises an exception, leading to HTTP ERROR 400, "Bad Request"
-    // ----------------------
 
     @PostMapping
     public @NotNull String processTaco(

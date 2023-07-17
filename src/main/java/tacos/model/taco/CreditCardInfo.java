@@ -14,7 +14,7 @@ public class CreditCardInfo {
     @CreditCardNumber(message = "Not a valid credit card number")
     private String ccNumber;
 
-    @CreditCardExpiryDate(message = "Bad credit card expiry date")
+    @CreditCardExpiryDate // message built in validator
     private String ccExpiration;
 
     @Digits(integer = 3, fraction = 0, message = "Invalid credit card CVV")

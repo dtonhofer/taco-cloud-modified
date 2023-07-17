@@ -18,6 +18,9 @@ public final class IngredientId {
 
     private final @NotNull String id;
 
+    // The constructor doesn't care about the casing of the string "id"
+    // and forces it to uppercase.
+
     public IngredientId(@NotNull String id) {
         String tid = id.trim().toUpperCase();
         if ("".equals(tid)) {
@@ -47,6 +50,7 @@ public final class IngredientId {
 
     // For Thymeleaf templates, we need the raw string underlying the id.
     // No fancy formatting provided by ".toString()"
+    // The returned string is all uppercase.
 
     public String getRaw() {
         return id;
