@@ -45,7 +45,7 @@ public class TacoIngredientsValidator implements ConstraintValidator<TacoIngredi
             return true;
         } else {
             // TODO: would it be possible to list several separate errors?
-            String fullText = errors.stream().collect(Collectors.joining(" & "));
+            String fullText = String.join(" & ", errors);
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(fullText).addConstraintViolation();
             return false;

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,6 +23,7 @@ import java.util.*;
 public class TacoOrder implements Serializable {
 
     // Added in Chapter 3.1.1
+    @Serial
     private static final long serialVersionUID = 1L;
 
     // Added in Chapter 3.1.1

@@ -96,9 +96,11 @@ public class IngredientRelation {
     // TODO: This should be buffered.
 
     public @NotNull List<IngredientType> getAvailableTypes() {
-        Set<IngredientType> set = map.values().stream().map(Ingredient::getType).collect(Collectors.toSet());
-        ArrayList<IngredientType> list = new ArrayList<>(set);
-        list.sort(Enum::compareTo);
+        ArrayList<IngredientType> list = map.values().stream()
+                .map(Ingredient::getType)
+                .distinct()
+                .sorted(Enum::compareTo)
+                .collect(Collectors.toCollection(ArrayList::new));
         return list;
     }
 }

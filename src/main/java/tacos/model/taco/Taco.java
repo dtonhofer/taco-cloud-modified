@@ -123,7 +123,7 @@ public class Taco {
             Set<Ingredient> ingredientsByType = getIngredientsByType(type);
             if (!ingredientsByType.isEmpty()) {
                 buf.append("\n");
-                buf.append(type.toString());
+                buf.append(type);
                 buf.append(": ");
                 buf.append(setToList(ingredientsByType).stream().map(Ingredient::getName).collect(Collectors.joining(" & ")));
             }

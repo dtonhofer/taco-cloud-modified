@@ -7,14 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import tacos.model.helpers.ErrorPrinter;
 import tacos.model.helpers.Helpers;
 import tacos.model.ingredients.hardcoded.IngredientRelation;
 import tacos.model.taco.Taco;
 import tacos.model.taco.TacoOrder;
 import tacos.web.common.Common;
-
-import static tacos.model.helpers.Helpers.indent;
 
 // ---
 // Based on Listing 2.4 of "Spring in Action" 6th edition
