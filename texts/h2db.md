@@ -2,15 +2,27 @@
 
 ## Starting the "remote" H2
 
-To start the H2 database in remote mode, run 
+To start the H2 database in remote mode, (see [Using the Server](http://h2database.com/html/tutorial.html?highlight=JDBC_URL&search=JDBC#using_server)), run
 
 ~~~
-java -jar h2.jar &
+java -cp ${PATH_TO}/h2.jar org.h2.tools.Server &
 ~~~
 
-in the shell. 
+in the shell. That is "put `h2.jar` on the Java classpath, execute class `org.h2.tools.Server` and the shell will put the process into the
+set of processes running in the background as demanded by `&`.
 
-Of course you must have downloaded `h2.jar` first, generally as somethin glike `h2-2.2.220.jar`, which you can then rename or symlink to.
+There is no need to use the `nohup` command to make the process immune to closing of the terminal. The process seems to be immune already.
+
+An icon my appear in the system tray. It allows you to shut the database down or start a new browser to connect to the H2 console.
+
+The H2 database process will listen on three ports, one for each TCP server it is running internally, on of which is the console web server on port 8082.
+Each can be switched off via appropriate command line options.
+
+- 9092: TCP for JDBC. Out-of-process JDBC client can connect here
+- 5435: TCP for PostgresSQL client protocol. You can use a PostgreSQL client to connect to the H2 database here (I think this is useful for when you want to connect with ODBC, as an ODBC-PostgresSQL bridge can be used here)
+- 8082: "Web Console": You get HTTP on this port. You can connect with the browser to this endpoint to run your queries. Use http://localhost:8082/ to connect.
+
+Of course you must have downloaded `h2.jar` first, generally as something like `h2-2.2.220.jar`, which you can then rename or symlink to.
 
 In my case, `h2-2.2.220.jar` had been downloaded by Gradle via the IDE and was available in the Gradle cache as:
 
@@ -24,40 +36,60 @@ Thus:
 mkdir -p ~/Spring/h2
 cp ~/.gradle/caches/modules-2/files-2.1/com.h2database/h2/2.2.220/afd532e4f29d309ae053e57c853916551c777807/h2-2.2.220.jar ~/Spring/h2
 ln -s ~/Spring/h2/h2-2.2.220.jar ~/Spring/h2/h2.jar
+PATH="~/Spring/h2"
 ~~~
 
-And then you can just run:
+And then you can just `java -cp ${PATH_TO}/h2.jar org.h2.tools.Server`
+
+This command takes `-?` to list options:
 
 ~~~
-java -jar ~/Spring/h2/h2.jar &
+$ java -cp h2.jar org.h2.tools.Server -?
+Starts the H2 Console (web-) server, TCP, and PG server.
+Usage: java org.h2.tools.Server <options>
+When running without options, -tcp, -web, -browser and -pg are started.
+
+ Options are case sensitive.
+Supported options[-help] or [-?]Print the list of options
+[-web]                  Start the web server with the H2 Console
+[-webAllowOthers]       Allow other computers to connect - see below
+[-webExternalNames]     The comma-separated list of external names and IP addresses of this server, used together with -webAllowOthers
+[-webDaemon]            Use a daemon thread
+[-webPort <port>]       The port (default: 8082)
+[-webSSL]               Use encrypted (HTTPS) connections
+[-webAdminPassword]     Password of DB Console administrator
+[-browser]              Start a browser connecting to the web server
+[-tcp]                  Start the TCP server
+[-tcpAllowOthers]       Allow other computers to connect - see below
+[-tcpDaemon]            Use a daemon thread
+[-tcpPort <port>]       The port (default: 9092)
+[-tcpSSL]               Use encrypted (SSL) connections
+[-tcpPassword <pwd>]    The password for shutting down a TCP server
+[-tcpShutdown "<url>"]  Stop the TCP server; example: tcp://localhost
+[-tcpShutdownForce]     Do not wait until all connections are closed
+[-pg]                   Start the PG server
+[-pgAllowOthers]        Allow other computers to connect - see below
+[-pgDaemon]             Use a daemon thread
+[-pgPort <port>]        The port (default: 5435)
+[-properties "<dir>"]   Server properties (default: ~, disable: null)
+[-baseDir <dir>]        The base directory for H2 databases (all servers)
+[-ifExists]             Only existing databases may be opened (all servers)
+[-ifNotExists]          Databases are created when accessed
+[-trace]                Print additional trace information (all servers)
+[-key <from> <to>]      Allows to map a database name to another (all servers)
+The options -xAllowOthers are potentially risky.
+
+ For details, see Advanced Topics / Protection against Remote Access.
+See also https://h2database.com/javadoc/org/h2/tools/Server.html
 ~~~
 
-An alternative command is
+An alternative command to run the remote H2 server is:
 
 ~~~
 java -cp h2.jar org.h2.tools.GUIConsole &
 ~~~
 
-The browser will be started, with the URL of the Web console: http://192.168.1.30:8082
-
-The H2 database process will listen on three ports, one for each TCP server it is running internally, on of which is the console web server on port 8082.
-
-An icon my appear in the system tray. It allows you to shut the database down or start a new browser to connect to the H2 console.
-
-Asking for help options on the command line does not work though:
-
-~~~
-java -jar h2.jar -help
-~~~
-
-just gives
-
-~~~
-null
-Usage: java org.h2.tools.GUIConsole <options>
-null
-See also https://h2database.com/javadoc/org/h2/tools/GUIConsole.html
-~~~
+In this case, the browser will additionally be started, with the URL of the Web console: http://localhost:8082/
 
 ## Web Console
 
@@ -101,7 +133,7 @@ SQL commands to manipulate specific settings exist. See here: http://h2database.
 
 ## Ports in use on H2 process in "remote" mode
 
-The following ports are in use:
+As mentioned the following ports are in use:
 
 - 9092: TCP for JDBC. Out-of-process JDBC client can connect here
 - 5435: TCP for PostgresSQL client protocol. You can use a PostgreSQL client to connect to the H2 database here (I think this is useful for when you want to connect with ODBC, as an ODBC-PostgresSQL bridge can be used here)
